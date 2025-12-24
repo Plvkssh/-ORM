@@ -31,7 +31,6 @@ public class Module {
     @OneToOne(mappedBy = "module", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Quiz quiz;
 
-    // Конструкторы
     public Module() {}
     
     public Module(Course course, String title, Integer orderIndex, String description) {
@@ -41,7 +40,6 @@ public class Module {
         this.description = description;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -96,5 +94,14 @@ public class Module {
     
     public void setQuiz(Quiz quiz) { 
         this.quiz = quiz; 
+    }
+    
+    @Override
+    public String toString() {
+        return "Module{id=" + id + 
+               ", course=" + (course != null ? course.getId() : "null") + 
+               ", title='" + title + '\'' + 
+               ", orderIndex=" + orderIndex + 
+               ", description='" + description + '\'' + '}';
     }
 }
