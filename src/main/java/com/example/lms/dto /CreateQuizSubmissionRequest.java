@@ -1,47 +1,53 @@
 package com.example.lms.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public class CreateQuizSubmissionRequest {
-    @NotNull(message = "ID теста обязателен для заполнения")
-    private Long quizId;
+public class CreateQuizRequest {
+    @NotNull(message = "ID модуля обязателен для заполнения")
+    private Long moduleId;
     
-    @NotNull(message = "ID студента обязателен для заполнения")
-    private Long studentId;
+    @NotBlank(message = "Название теста не может быть пустым")
+    private String title;
     
-    private Integer score;
+    private Integer timeLimitMinutes;
 
-    // Конструкторы
-    public CreateQuizSubmissionRequest() {}
+    public CreateQuizRequest() {}
     
-    public CreateQuizSubmissionRequest(Long quizId, Long studentId, Integer score) {
-        this.quizId = quizId;
-        this.studentId = studentId;
-        this.score = score;
+    public CreateQuizRequest(Long moduleId, String title, Integer timeLimitMinutes) {
+        this.moduleId = moduleId;
+        this.title = title;
+        this.timeLimitMinutes = timeLimitMinutes;
     }
 
-    // Геттеры и сеттеры
-    public Long getQuizId() { 
-        return quizId; 
+    public Long getModuleId() { 
+        return moduleId; 
     }
     
-    public void setQuizId(Long quizId) { 
-        this.quizId = quizId; 
+    public void setModuleId(Long moduleId) { 
+        this.moduleId = moduleId; 
     }
     
-    public Long getStudentId() { 
-        return studentId; 
+    public String getTitle() { 
+        return title; 
     }
     
-    public void setStudentId(Long studentId) { 
-        this.studentId = studentId; 
+    public void setTitle(String title) { 
+        this.title = title; 
     }
     
-    public Integer getScore() { 
-        return score; 
+    public Integer getTimeLimitMinutes() { 
+        return timeLimitMinutes; 
     }
     
-    public void setScore(Integer score) { 
-        this.score = score; 
+    public void setTimeLimitMinutes(Integer timeLimitMinutes) { 
+        this.timeLimitMinutes = timeLimitMinutes; 
+    }
+    
+    @Override
+    public String toString() {
+        return "CreateQuizRequest{moduleId=" + moduleId + 
+               ", title='" + title + '\'' + 
+               ", timeLimitMinutes=" + timeLimitMinutes + '}';
     }
 }
