@@ -10,39 +10,61 @@ import java.util.stream.Collectors;
 
 public class CourseMapper {
 
-    public static CourseResponse toResponse(Course course) {
-        CourseResponse response = new CourseResponse();
-        response.setId(course.getId());
-        response.setTitle(course.getTitle());
-        response.setDescription(course.getDescription());
-        response.setDuration(course.getDuration());
-        response.setStartDate(course.getStartDate());
-        response.setCategoryId(course.getCategory() != null ? course.getCategory().getId() : null);
-        response.setTeacherId(course.getTeacher() != null ? course.getTeacher().getId() : null);
-        Set<Long> tagIds = course.getTags() == null ? new HashSet<>() : course.getTags().stream().map(Tag::getId).collect(Collectors.toSet());
-        response.setTagIds(tagIds);
-        return response;
+    /**
+     * Преобразует сущность Course в DTO для ответа.
+     * Извлекает ID связанных сущностей: категории, преподавателя и тегов.
+     */
+    public static CourseResponse toResponse(Course source) {
+        CourseResponse target = new CourseResponse();
+        target.setId(source.getId());
+        target.setTitle(source.getTitle());
+        target.setDescription(source.getDescription());
+        target.setDuration(source.getDuration());
+        target.setStartDate(source.getStartDate());
+        
+        Category category = source.getCategory();
+        target.setCategoryId(category != null ? category.getId() : null);
+        
+        User teacher = source.getTeacher();
+        target.setTeacherId(teacher != null ? teacher.getId() : null);
+        
+        Set<Tag> tags = source.getTags();
+        Set<Long> tagIds = tags == null ? new HashSet<>() : 
+                          tags.stream().map(Tag::getId).collect(Collectors.toSet());
+        target.setTagIds(tagIds);
+        
+        return target;
     }
 
-    public static Course fromRequest(CreateCourseRequest request, Category category, User teacher, Set<Tag> tags) {
-        Course course = new Course();
-        course.setTitle(request.getTitle());
-        course.setDescription(request.getDescription());
-        course.setDuration(request.getDuration());
-        course.setStartDate(request.getStartDate());
-        course.setCategory(category);
-        course.setTeacher(teacher);
-        course.setTags(tags);
-        return course;
+    /**
+     * Создает новую сущность Course на основе запроса и связанных сущностей.
+     */
+    public static Course fromRequest(CreateCourseRequest request, Category category, 
+                                    User teacher, Set<Tag> tags) {
+        Course entity = new Course();
+        entity.setTitle(request.getTitle());
+        entity.setDescription(request.getDescription());
+        entity.setDuration(request.getDuration());
+        entity.setStartDate(request.getStartDate());
+        entity.setCategory(category);
+        entity.setTeacher(teacher);
+        entity.setTags(tags);
+        
+        return entity;
     }
 
-    public static void updateEntity(Course existingCourse, CreateCourseRequest request, Category category, User teacher, Set<Tag> tags) {
-        existingCourse.setTitle(request.getTitle());
-        existingCourse.setDescription(request.getDescription());
-        existingCourse.setDuration(request.getDuration());
-        existingCourse.setStartDate(request.getStartDate());
-        existingCourse.setCategory(category);
-        existingCourse.setTeacher(teacher);
-        existingCourse.setTags(tags);
+    /**
+     * Обновляет существующую сущность Course данными из запроса.
+     * Также обновляет связи с категорией, преподавателем и тегами.
+     */
+    public static void updateEntity(Course target, CreateCourseRequest source, 
+                                   Category category, User teacher, Set<Tag> tags) {
+        target.setTitle(source.getTitle());
+        target.setDescription(source.getDescription());
+        target.setDuration(source.getDuration());
+        target.setStartDate(source.getStartDate());
+        target.setCategory(category);
+        target.setTeacher(teacher);
+        target.setTags(tags);
     }
 }
