@@ -15,10 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-/**
- * Сервис для управления прохождением тестов студентами.
- * Обрабатывает отправку ответов на тесты, вычисление результатов и сохранение попыток.
- */
 @Service
 @Transactional
 public class QuizSubmissionService {
@@ -35,46 +31,25 @@ public class QuizSubmissionService {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Получает все попытки прохождения тестов из системы.
-     *
-     * @return список всех попыток прохождения тестов
-     */
     public List<QuizSubmission> findAll() { 
         return quizSubmissionRepository.findAll(); 
     }
 
     /**
-     * Находит попытку прохождения теста по её идентификатору.
-     *
-     * @param id идентификатор попытки
-     * @return найденная попытка прохождения теста
-     * @throws NoSuchElementException если попытка с указанным ID не существует
+     * Возвращает попытку прохождения теста по ID. Если не найдена, выбрасывает исключение.
      */
     public QuizSubmission getById(Long id) { 
         return quizSubmissionRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("QuizSubmission not found")); 
     }
 
-    /**
-     * Создаёт новую попытку прохождения теста.
-     *
-     * @param quizSubmission попытка для создания
-     * @return сохранённая попытка с присвоенным ID
-     */
     public QuizSubmission create(QuizSubmission quizSubmission) { 
         return quizSubmissionRepository.save(quizSubmission); 
     }
 
     /**
-     * Обрабатывает прохождение теста студентом с вычислением результата.
-     * Собирает ответы студента, проверяет их правильность и вычисляет итоговый балл.
-     *
-     * @param quizId идентификатор теста
-     * @param studentId идентификатор студента
-     * @param answers карта ответов: ключ - ID вопроса, значение - ID выбранного варианта ответа
-     * @return сохранённая попытка прохождения теста с вычисленным результатом
-     * @throws NoSuchElementException если тест или студент не найдены
+     * Обрабатывает прохождение теста студентом.
+     * Проверяет ответы, вычисляет результат и сохраняет попытку.
      */
     public QuizSubmission takeQuiz(Long quizId, Long studentId, Map<Long, Long> answers) {
         Quiz quiz = quizRepository.findById(quizId)
@@ -82,7 +57,6 @@ public class QuizSubmissionService {
         User student = userRepository.findById(studentId)
                 .orElseThrow(() -> new NoSuchElementException("Student not found"));
         
-        // В рамках транзакции загружаем вопросы и варианты ответов
         List<Question> questions = quiz.getQuestions();
         int totalQuestions = questions.size();
         int correctAnswers = 0;
@@ -90,7 +64,6 @@ public class QuizSubmissionService {
         for (Question question : questions) {
             Long selectedOptionId = answers.get(question.getId());
             if (selectedOptionId != null) {
-                // Загружаем варианты ответов для текущего вопроса
                 List<AnswerOption> options = question.getOptions();
                 for (AnswerOption option : options) {
                     if (option.getId().equals(selectedOptionId) && option.isCorrect()) {
@@ -110,11 +83,6 @@ public class QuizSubmissionService {
         return quizSubmissionRepository.save(submission);
     }
 
-    /**
-     * Удаляет попытку прохождения теста из системы.
-     *
-     * @param id идентификатор удаляемой попытки
-     */
     public void delete(Long id) { 
         quizSubmissionRepository.deleteById(id); 
     }
