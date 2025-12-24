@@ -8,10 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-/**
- * Сервис для управления уроками в системе обучения.
- * Обеспечивает базовые CRUD-операции для уроков, входящих в состав модулей.
- */
 @Service
 @Transactional
 public class LessonService {
@@ -22,59 +18,34 @@ public class LessonService {
         this.lessonRepository = lessonRepository;
     }
 
-    /**
-     * Получает все уроки из системы.
-     *
-     * @return список всех уроков
-     */
     public List<Lesson> findAll() { 
         return lessonRepository.findAll(); 
     }
 
     /**
-     * Находит урок по его идентификатору.
-     *
-     * @param id идентификатор урока
-     * @return найденный урок
-     * @throws NoSuchElementException если урок с указанным ID не существует
+     * Возвращает урок по ID. Если урок не найден, выбрасывает исключение.
      */
     public Lesson getById(Long id) {
         return lessonRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Lesson not found"));
     }
 
-    /**
-     * Создаёт новый урок в системе.
-     *
-     * @param lesson урок для создания
-     * @return сохранённый урок с присвоенным ID
-     */
     public Lesson create(Lesson lesson) { 
         return lessonRepository.save(lesson); 
     }
 
     /**
-     * Обновляет существующий урок.
-     *
-     * @param id идентификатор обновляемого урока
-     * @param updated обновлённые данные урока
-     * @return сохранённый обновлённый урок
-     * @throws NoSuchElementException если урок с указанным ID не существует
+     * Обновляет существующий урок. Сначала проверяет его существование.
      */
-    public Lesson update(Long id, Lesson updated) {
+    public Lesson update(Long id, Lesson updatedLesson) {
         Lesson existingLesson = getById(id);
-        existingLesson.setModule(updated.getModule());
-        existingLesson.setTitle(updated.getTitle());
-        existingLesson.setContent(updated.getContent());
-        existingLesson.setVideoUrl(updated.getVideoUrl());
+        existingLesson.setModule(updatedLesson.getModule());
+        existingLesson.setTitle(updatedLesson.getTitle());
+        existingLesson.setContent(updatedLesson.getContent());
+        existingLesson.setVideoUrl(updatedLesson.getVideoUrl());
         return lessonRepository.save(existingLesson);
     }
 
-    /**
-     * Удаляет урок из системы.
-     *
-     * @param id идентификатор удаляемого урока
-     */
     public void delete(Long id) { 
         lessonRepository.deleteById(id); 
     }
