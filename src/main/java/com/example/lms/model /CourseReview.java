@@ -28,7 +28,6 @@ public class CourseReview {
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // Конструкторы
     public CourseReview() {}
     
     public CourseReview(Course course, User student, Integer rating, String comment) {
@@ -38,7 +37,6 @@ public class CourseReview {
         this.comment = comment;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -85,5 +83,15 @@ public class CourseReview {
     
     public void setCreatedAt(LocalDateTime createdAt) { 
         this.createdAt = createdAt; 
+    }
+    
+    @Override
+    public String toString() {
+        return "CourseReview{id=" + id + 
+               ", course=" + (course != null ? course.getId() : "null") + 
+               ", student=" + (student != null ? student.getId() : "null") + 
+               ", rating=" + rating + 
+               ", comment='" + comment + '\'' + 
+               ", createdAt=" + createdAt + '}';
     }
 }
