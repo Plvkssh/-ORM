@@ -10,10 +10,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-/**
- * Тест для проверки работы ленивой загрузки (Lazy Loading) в JPA.
- * Проверяет корректное поведение при доступе к ленивым коллекциям вне транзакции.
- */
 @DataJpaTest
 class LazyLoadingTest extends PostgresContainerTest {
 
@@ -29,16 +25,8 @@ class LazyLoadingTest extends PostgresContainerTest {
     @Autowired 
     private TransactionTemplate transactionTemplate;
 
-    /**
-     * Проверяет, что доступ к ленивой коллекции modules вне активной транзакции
-     * вызывает исключение LazyInitializationException.
-     * 
-     * Тест создаёт курс с модулем внутри транзакции, затем загружает курс
-     * вне транзакции и пытается получить доступ к коллекции modules.
-     */
     @Test
     void accessingLazyCollectionOutsideTx_throwsLazyInitializationException() {
-        // Создание курса и модуля внутри транзакции
         Long courseId = transactionTemplate.execute(status -> {
             User teacher = new User();
             teacher.setName("Тестовый преподаватель");
@@ -60,11 +48,9 @@ class LazyLoadingTest extends PostgresContainerTest {
             return course.getId();
         });
 
-        // Загрузка курса вне транзакции
-        Course detachedCourse = courseRepository.findById(courseId).orElseThrow();
+        Course course = courseRepository.findById(courseId).orElseThrow();
         
-        // Проверка, что доступ к ленивой коллекции вызывает исключение
-        assertThatThrownBy(() -> detachedCourse.getModules().size())
+        assertThatThrownBy(() -> course.getModules().size())
                 .isInstanceOf(LazyInitializationException.class);
     }
 }
