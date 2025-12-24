@@ -12,7 +12,6 @@ public class AnswerOptionRequest {
     
     private boolean correct;
 
-    // Конструкторы
     public AnswerOptionRequest() {}
     
     public AnswerOptionRequest(Long questionId, String text, boolean correct) {
@@ -21,7 +20,6 @@ public class AnswerOptionRequest {
         this.correct = correct;
     }
 
-    // Геттеры и сеттеры
     public Long getQuestionId() { 
         return questionId; 
     }
@@ -44,5 +42,12 @@ public class AnswerOptionRequest {
     
     public void setCorrect(boolean correct) { 
         this.correct = correct; 
+    }
+    
+    @Override
+    public String toString() {
+        return "AnswerOptionRequest{questionId=" + questionId + 
+               ", text='" + text + '\'' + 
+               ", correct=" + correct + '}';
     }
 }
