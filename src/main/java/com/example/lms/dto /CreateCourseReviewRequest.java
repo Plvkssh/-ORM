@@ -18,7 +18,6 @@ public class CreateCourseReviewRequest {
     
     private String comment;
 
-    // Конструкторы
     public CreateCourseReviewRequest() {}
     
     public CreateCourseReviewRequest(Long courseId, Long studentId, Integer rating, String comment) {
@@ -28,7 +27,6 @@ public class CreateCourseReviewRequest {
         this.comment = comment;
     }
 
-    // Геттеры и сеттеры
     public Long getCourseId() { 
         return courseId; 
     }
@@ -59,5 +57,13 @@ public class CreateCourseReviewRequest {
     
     public void setComment(String comment) { 
         this.comment = comment; 
+    }
+    
+    @Override
+    public String toString() {
+        return "CreateCourseReviewRequest{courseId=" + courseId + 
+               ", studentId=" + studentId + 
+               ", rating=" + rating + 
+               ", comment='" + comment + '\'' + '}';
     }
 }
