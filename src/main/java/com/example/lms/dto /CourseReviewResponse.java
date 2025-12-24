@@ -10,7 +10,6 @@ public class CourseReviewResponse {
     private String comment;
     private LocalDateTime createdAt;
 
-    // Конструкторы
     public CourseReviewResponse() {}
     
     public CourseReviewResponse(Long id, Long courseId, Long studentId, Integer rating, 
@@ -23,7 +22,6 @@ public class CourseReviewResponse {
         this.createdAt = createdAt;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -70,5 +68,15 @@ public class CourseReviewResponse {
     
     public void setCreatedAt(LocalDateTime createdAt) { 
         this.createdAt = createdAt; 
+    }
+    
+    @Override
+    public String toString() {
+        return "CourseReviewResponse{id=" + id + 
+               ", courseId=" + courseId + 
+               ", studentId=" + studentId + 
+               ", rating=" + rating + 
+               ", comment='" + comment + '\'' + 
+               ", createdAt=" + createdAt + '}';
     }
 }
