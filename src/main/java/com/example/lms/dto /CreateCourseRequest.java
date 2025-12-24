@@ -20,7 +20,6 @@ public class CreateCourseRequest {
 
     private Set<Long> tagIds;
 
-    // Конструкторы
     public CreateCourseRequest() {}
     
     public CreateCourseRequest(String title, String description, String duration, 
@@ -34,7 +33,6 @@ public class CreateCourseRequest {
         this.tagIds = tagIds;
     }
 
-    // Геттеры и сеттеры
     public String getTitle() { 
         return title; 
     }
@@ -89,5 +87,16 @@ public class CreateCourseRequest {
     
     public void setTagIds(Set<Long> tagIds) { 
         this.tagIds = tagIds; 
+    }
+    
+    @Override
+    public String toString() {
+        return "CreateCourseRequest{title='" + title + '\'' + 
+               ", description='" + description + '\'' + 
+               ", duration='" + duration + '\'' + 
+               ", startDate=" + startDate + 
+               ", categoryId=" + categoryId + 
+               ", teacherId=" + teacherId + 
+               ", tagIds=" + tagIds + '}';
     }
 }
