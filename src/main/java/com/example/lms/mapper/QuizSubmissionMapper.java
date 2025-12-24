@@ -7,21 +7,38 @@ import com.example.lms.model.QuizSubmission;
 import com.example.lms.model.User;
 
 public class QuizSubmissionMapper {
-    public static QuizSubmissionResponse toResponse(QuizSubmission quizSubmission) {
-        QuizSubmissionResponse response = new QuizSubmissionResponse();
-        response.setId(quizSubmission.getId());
-        response.setQuizId(quizSubmission.getQuiz() != null ? quizSubmission.getQuiz().getId() : null);
-        response.setStudentId(quizSubmission.getStudent() != null ? quizSubmission.getStudent().getId() : null);
-        response.setScore(quizSubmission.getScore());
-        response.setTakenAt(quizSubmission.getTakenAt());
-        return response;
+    
+    /**
+     * Преобразует сущность QuizSubmission в DTO для ответа.
+     * Извлекает ID связанных теста и студента.
+     */
+    public static QuizSubmissionResponse toResponse(QuizSubmission source) {
+        QuizSubmissionResponse target = new QuizSubmissionResponse();
+        target.setId(source.getId());
+        
+        Quiz quiz = source.getQuiz();
+        target.setQuizId(quiz != null ? quiz.getId() : null);
+        
+        User student = source.getStudent();
+        target.setStudentId(student != null ? student.getId() : null);
+        
+        target.setScore(source.getScore());
+        target.setTakenAt(source.getTakenAt());
+        
+        return target;
     }
 
-    public static QuizSubmission fromRequest(CreateQuizSubmissionRequest request, Quiz quiz, User student) {
-        QuizSubmission quizSubmission = new QuizSubmission();
-        quizSubmission.setQuiz(quiz);
-        quizSubmission.setStudent(student);
-        quizSubmission.setScore(request.getScore());
-        return quizSubmission;
+    /**
+     * Создает новую сущность QuizSubmission на основе запроса.
+     * Привязывает отправку теста к указанному тесту и студенту.
+     */
+    public static QuizSubmission fromRequest(CreateQuizSubmissionRequest request, 
+                                           Quiz quiz, User student) {
+        QuizSubmission entity = new QuizSubmission();
+        entity.setQuiz(quiz);
+        entity.setStudent(student);
+        entity.setScore(request.getScore());
+        
+        return entity;
     }
 }
