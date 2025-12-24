@@ -6,29 +6,47 @@ import com.example.lms.model.Lesson;
 import com.example.lms.model.Module;
 
 public class LessonMapper {
-    public static LessonResponse toResponse(Lesson lesson) {
-        LessonResponse response = new LessonResponse();
-        response.setId(lesson.getId());
-        response.setModuleId(lesson.getModule() != null ? lesson.getModule().getId() : null);
-        response.setTitle(lesson.getTitle());
-        response.setContent(lesson.getContent());
-        response.setVideoUrl(lesson.getVideoUrl());
-        return response;
+    
+    /**
+     * Преобразует сущность Lesson в DTO для ответа.
+     * Извлекает ID связанного модуля.
+     */
+    public static LessonResponse toResponse(Lesson source) {
+        LessonResponse target = new LessonResponse();
+        target.setId(source.getId());
+        
+        Module module = source.getModule();
+        target.setModuleId(module != null ? module.getId() : null);
+        
+        target.setTitle(source.getTitle());
+        target.setContent(source.getContent());
+        target.setVideoUrl(source.getVideoUrl());
+        
+        return target;
     }
 
+    /**
+     * Создает новую сущность Lesson на основе запроса.
+     * Привязывает урок к указанному модулю.
+     */
     public static Lesson fromRequest(CreateLessonRequest request, Module module) {
-        Lesson lesson = new Lesson();
-        lesson.setModule(module);
-        lesson.setTitle(request.getTitle());
-        lesson.setContent(request.getContent());
-        lesson.setVideoUrl(request.getVideoUrl());
-        return lesson;
+        Lesson entity = new Lesson();
+        entity.setModule(module);
+        entity.setTitle(request.getTitle());
+        entity.setContent(request.getContent());
+        entity.setVideoUrl(request.getVideoUrl());
+        
+        return entity;
     }
 
-    public static void updateEntity(Lesson existingLesson, CreateLessonRequest request, Module module) {
-        existingLesson.setModule(module);
-        existingLesson.setTitle(request.getTitle());
-        existingLesson.setContent(request.getContent());
-        existingLesson.setVideoUrl(request.getVideoUrl());
+    /**
+     * Обновляет существующую сущность Lesson данными из запроса.
+     * Также обновляет связь с модулем.
+     */
+    public static void updateEntity(Lesson target, CreateLessonRequest source, Module module) {
+        target.setModule(module);
+        target.setTitle(source.getTitle());
+        target.setContent(source.getContent());
+        target.setVideoUrl(source.getVideoUrl());
     }
 }
