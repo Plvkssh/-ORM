@@ -20,14 +20,12 @@ public class Tag {
     @ManyToMany(mappedBy = "tags")
     private Set<Course> courses = new HashSet<>();
 
-    // Конструкторы
     public Tag() {}
     
     public Tag(String name) {
         this.name = name;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -50,5 +48,11 @@ public class Tag {
     
     public void setCourses(Set<Course> courses) { 
         this.courses = courses; 
+    }
+    
+    @Override
+    public String toString() {
+        return "Tag{id=" + id + 
+               ", name='" + name + '\'' + '}';
     }
 }
