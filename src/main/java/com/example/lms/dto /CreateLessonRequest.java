@@ -13,7 +13,6 @@ public class CreateLessonRequest {
     private String content;
     private String videoUrl;
 
-    // Конструкторы
     public CreateLessonRequest() {}
     
     public CreateLessonRequest(Long moduleId, String title, String content, String videoUrl) {
@@ -23,7 +22,6 @@ public class CreateLessonRequest {
         this.videoUrl = videoUrl;
     }
 
-    // Геттеры и сеттеры
     public Long getModuleId() { 
         return moduleId; 
     }
@@ -54,5 +52,13 @@ public class CreateLessonRequest {
     
     public void setVideoUrl(String videoUrl) { 
         this.videoUrl = videoUrl; 
+    }
+    
+    @Override
+    public String toString() {
+        return "CreateLessonRequest{moduleId=" + moduleId + 
+               ", title='" + title + '\'' + 
+               ", content='" + content + '\'' + 
+               ", videoUrl='" + videoUrl + '\'' + '}';
     }
 }
