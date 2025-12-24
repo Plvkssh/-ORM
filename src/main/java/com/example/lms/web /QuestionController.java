@@ -20,10 +20,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-/**
- * Контроллер для управления вопросами тестов через REST API.
- * Предоставляет endpoints для работы с вопросами и их вариантами ответов.
- */
 @RestController
 @RequestMapping("/api/questions")
 public class QuestionController {
@@ -40,11 +36,6 @@ public class QuestionController {
         this.questionRepository = questionRepository;
     }
 
-    /**
-     * Получает все вопросы тестов.
-     *
-     * @return список всех вопросов в формате DTO
-     */
     @GetMapping
     public List<QuestionResponse> findAll() { 
         return questionService.findAll().stream()
@@ -52,54 +43,36 @@ public class QuestionController {
                 .collect(Collectors.toList()); 
     }
 
-    /**
-     * Находит вопрос по идентификатору.
-     *
-     * @param id идентификатор вопроса
-     * @return вопрос в формате DTO
-     */
     @GetMapping("/{id}")
     public QuestionResponse getById(@PathVariable Long id) { 
         return QuestionMapper.toResponse(questionService.getById(id)); 
     }
 
     /**
-     * Создаёт новый вопрос теста.
-     *
-     * @param request данные для создания вопроса
-     * @return созданный вопрос в формате DTO
-     * @throws NoSuchElementException если тест с указанным ID не найден
+     * Создает новый вопрос теста. Проверяет существование теста.
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public QuestionResponse create(@Valid @RequestBody CreateQuestionRequest request) {
         Quiz quiz = quizRepository.findById(request.getQuizId())
                 .orElseThrow(() -> new NoSuchElementException("Quiz not found with id: " + request.getQuizId()));
-        Question created = questionService.create(QuestionMapper.fromRequest(request, quiz));
-        return QuestionMapper.toResponse(created);
+        
+        Question question = questionService.create(QuestionMapper.fromRequest(request, quiz));
+        return QuestionMapper.toResponse(question);
     }
 
     /**
-     * Обновляет существующий вопрос теста.
-     *
-     * @param id идентификатор обновляемого вопроса
-     * @param request обновлённые данные вопроса
-     * @return обновлённый вопрос в формате DTO
-     * @throws NoSuchElementException если тест с указанным ID не найден
+     * Обновляет существующий вопрос. Проверяет существование теста.
      */
     @PutMapping("/{id}")
     public QuestionResponse update(@PathVariable Long id, @Valid @RequestBody CreateQuestionRequest request) {
         Quiz quiz = quizRepository.findById(request.getQuizId())
                 .orElseThrow(() -> new NoSuchElementException("Quiz not found with id: " + request.getQuizId()));
-        Question updated = questionService.update(id, QuestionMapper.fromRequest(request, quiz));
-        return QuestionMapper.toResponse(updated);
+        
+        Question question = questionService.update(id, QuestionMapper.fromRequest(request, quiz));
+        return QuestionMapper.toResponse(question);
     }
 
-    /**
-     * Удаляет вопрос теста.
-     *
-     * @param id идентификатор удаляемого вопроса
-     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) { 
@@ -107,27 +80,18 @@ public class QuestionController {
     }
 
     /**
-     * Добавляет вариант ответа к существующему вопросу.
-     *
-     * @param id идентификатор вопроса, к которому добавляется вариант
-     * @param request данные варианта ответа
-     * @return созданный вариант ответа в формате DTO
-     * @throws NoSuchElementException если вопрос с указанным ID не найден
+     * Добавляет вариант ответа к вопросу. Проверяет существование вопроса.
      */
     @PostMapping("/{id}/options")
     @ResponseStatus(HttpStatus.CREATED)
     public AnswerOptionResponse addOption(@PathVariable Long id, @Valid @RequestBody CreateAnswerOptionRequest request) {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Question not found with id: " + id));
-        AnswerOption saved = questionService.addOption(AnswerOptionMapper.fromRequest(request, question));
-        return AnswerOptionMapper.toResponse(saved);
+        
+        AnswerOption option = questionService.addOption(AnswerOptionMapper.fromRequest(request, question));
+        return AnswerOptionMapper.toResponse(option);
     }
 
-    /**
-     * Удаляет вариант ответа.
-     *
-     * @param optionId идентификатор удаляемого варианта ответа
-     */
     @DeleteMapping("/options/{optionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOption(@PathVariable Long optionId) { 
