@@ -24,7 +24,6 @@ public class QuizSubmission {
     @Column(nullable = false)
     private LocalDateTime takenAt = LocalDateTime.now();
 
-    // Конструкторы
     public QuizSubmission() {}
     
     public QuizSubmission(Quiz quiz, User student, Integer score) {
@@ -33,7 +32,6 @@ public class QuizSubmission {
         this.score = score;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -72,5 +70,14 @@ public class QuizSubmission {
     
     public void setTakenAt(LocalDateTime takenAt) { 
         this.takenAt = takenAt; 
+    }
+    
+    @Override
+    public String toString() {
+        return "QuizSubmission{id=" + id + 
+               ", quiz=" + (quiz != null ? quiz.getId() : "null") + 
+               ", student=" + (student != null ? student.getId() : "null") + 
+               ", score=" + score + 
+               ", takenAt=" + takenAt + '}';
     }
 }
