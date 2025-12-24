@@ -1,44 +1,31 @@
-# Конфигурация Spring Boot приложения Learning Management System
-# Настройки базы данных, JPA, сервера и логирования
+# Конфигурация приложения Learning Management System
+# База данных, JPA, сервер и логирование
 
 spring:
   datasource:
-    # URL для подключения к PostgreSQL. Использует переменные окружения или значения по умолчанию
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/lms}
-    # Имя пользователя БД. Можно переопределить через переменные окружения
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    # Пароль пользователя БД. Можно переопределить через переменные окружения
     password: ${SPRING_DATASOURCE_PASSWORD:postgres}
   
   jpa:
-    # Стратегия обновления схемы БД: update - обновляет схему при изменениях сущностей
     hibernate:
       ddl-auto: update
     
     properties:
       hibernate:
-        # Форматирование SQL запросов для удобного чтения в логах
         format_sql: true
-        # Разрешение создания LOB объектов без контекста
         jdbc.lob.non_contextual_creation: true
     
-    # Отключение открытой сессии в представлении для предотвращения проблем с производительностью
     open-in-view: false
   
   jackson:
     serialization:
-      # Сериализация дат в ISO-8601 формат вместо timestamp
       WRITE_DATES_AS_TIMESTAMPS: false
 
-# Настройки встроенного сервера
 server:
-  # Порт, на котором запускается приложение
   port: 8080
 
-# Настройки логирования
 logging:
   level:
-    # Логирование SQL запросов на уровне DEBUG для отладки
     org.hibernate.SQL: debug
-    # Логирование привязки параметров SQL на уровне TRACE для детальной отладки
     org.hibernate.orm.jdbc.bind: trace
