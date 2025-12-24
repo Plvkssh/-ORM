@@ -7,23 +7,40 @@ import com.example.lms.model.CourseReview;
 import com.example.lms.model.User;
 
 public class CourseReviewMapper {
-    public static CourseReviewResponse toResponse(CourseReview review) {
-        CourseReviewResponse response = new CourseReviewResponse();
-        response.setId(review.getId());
-        response.setCourseId(review.getCourse() != null ? review.getCourse().getId() : null);
-        response.setStudentId(review.getStudent() != null ? review.getStudent().getId() : null);
-        response.setRating(review.getRating());
-        response.setComment(review.getComment());
-        response.setCreatedAt(review.getCreatedAt());
-        return response;
+    
+    /**
+     * Преобразует сущность CourseReview в DTO для ответа.
+     * Извлекает ID связанных курса и студента.
+     */
+    public static CourseReviewResponse toResponse(CourseReview source) {
+        CourseReviewResponse target = new CourseReviewResponse();
+        target.setId(source.getId());
+        
+        Course course = source.getCourse();
+        target.setCourseId(course != null ? course.getId() : null);
+        
+        User student = source.getStudent();
+        target.setStudentId(student != null ? student.getId() : null);
+        
+        target.setRating(source.getRating());
+        target.setComment(source.getComment());
+        target.setCreatedAt(source.getCreatedAt());
+        
+        return target;
     }
 
-    public static CourseReview fromRequest(CreateCourseReviewRequest request, Course course, User student) {
-        CourseReview review = new CourseReview();
-        review.setCourse(course);
-        review.setStudent(student);
-        review.setRating(request.getRating());
-        review.setComment(request.getComment());
-        return review;
+    /**
+     * Создает новую сущность CourseReview на основе запроса.
+     * Привязывает отзыв к указанному курсу и студенту.
+     */
+    public static CourseReview fromRequest(CreateCourseReviewRequest request, 
+                                          Course course, User student) {
+        CourseReview entity = new CourseReview();
+        entity.setCourse(course);
+        entity.setStudent(student);
+        entity.setRating(request.getRating());
+        entity.setComment(request.getComment());
+        
+        return entity;
     }
 }
