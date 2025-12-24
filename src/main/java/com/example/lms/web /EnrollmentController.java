@@ -17,10 +17,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-/**
- * Контроллер для управления записями студентов на курсы через REST API.
- * Предоставляет endpoints для регистрации студентов на курсы и управления статусами записей.
- */
 @RestController
 @RequestMapping("/api/enrollments")
 public class EnrollmentController {
@@ -37,11 +33,6 @@ public class EnrollmentController {
         this.courseRepository = courseRepository;
     }
 
-    /**
-     * Получает все записи на курсы.
-     *
-     * @return список всех записей в формате DTO
-     */
     @GetMapping
     public List<EnrollmentResponse> findAll() { 
         return enrollmentService.findAll().stream()
@@ -49,23 +40,13 @@ public class EnrollmentController {
                 .collect(Collectors.toList()); 
     }
 
-    /**
-     * Находит запись на курс по идентификатору.
-     *
-     * @param id идентификатор записи
-     * @return запись в формате DTO
-     */
     @GetMapping("/{id}")
     public EnrollmentResponse getById(@PathVariable Long id) { 
         return EnrollmentMapper.toResponse(enrollmentService.getById(id)); 
     }
 
     /**
-     * Создаёт новую запись на курс.
-     *
-     * @param request данные для создания записи
-     * @return созданная запись в формате DTO
-     * @throws NoSuchElementException если студент или курс не найдены
+     * Создает новую запись на курс. Проверяет существование студента и курса.
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -79,12 +60,7 @@ public class EnrollmentController {
     }
 
     /**
-     * Обновляет существующую запись на курс.
-     *
-     * @param id идентификатор обновляемой записи
-     * @param request обновлённые данные записи
-     * @return обновлённая запись в формате DTO
-     * @throws NoSuchElementException если студент или курс не найдены
+     * Обновляет существующую запись. Проверяет существование записи, студента и курса.
      */
     @PutMapping("/{id}")
     public EnrollmentResponse update(@PathVariable Long id, @Valid @RequestBody CreateEnrollmentRequest request) {
@@ -97,11 +73,6 @@ public class EnrollmentController {
         return EnrollmentMapper.toResponse(updated);
     }
 
-    /**
-     * Удаляет запись на курс.
-     *
-     * @param id идентификатор удаляемой записи
-     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) { 
