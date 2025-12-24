@@ -48,7 +48,6 @@ public class Course {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
 
-    // Конструкторы
     public Course() {}
     
     public Course(String title, String description, String duration, LocalDate startDate, 
@@ -61,7 +60,6 @@ public class Course {
         this.teacher = teacher;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -148,5 +146,16 @@ public class Course {
     
     public void setTags(Set<Tag> tags) { 
         this.tags = tags; 
+    }
+    
+    @Override
+    public String toString() {
+        return "Course{id=" + id + 
+               ", title='" + title + '\'' + 
+               ", description='" + description + '\'' + 
+               ", duration='" + duration + '\'' + 
+               ", startDate=" + startDate + 
+               ", category=" + (category != null ? category.getId() : "null") + 
+               ", teacher=" + (teacher != null ? teacher.getId() : "null") + '}';
     }
 }
