@@ -10,7 +10,6 @@ public class EnrollmentResponse {
     private LocalDate enrollDate;
     private EnrollmentStatus status;
 
-    // Конструкторы
     public EnrollmentResponse() {}
     
     public EnrollmentResponse(Long id, Long studentId, Long courseId, 
@@ -22,7 +21,6 @@ public class EnrollmentResponse {
         this.status = status;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -61,5 +59,14 @@ public class EnrollmentResponse {
     
     public void setStatus(EnrollmentStatus status) { 
         this.status = status; 
+    }
+    
+    @Override
+    public String toString() {
+        return "EnrollmentResponse{id=" + id + 
+               ", studentId=" + studentId + 
+               ", courseId=" + courseId + 
+               ", enrollDate=" + enrollDate + 
+               ", status=" + status + '}';
     }
 }
