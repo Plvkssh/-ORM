@@ -13,10 +13,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-/**
- * Сервис для управления записями студентов на курсы.
- * Обрабатывает регистрацию студентов, проверку дубликатов и управление статусами записей.
- */
 @Service
 @Transactional
 public class EnrollmentService {
@@ -32,45 +28,25 @@ public class EnrollmentService {
         this.courseRepository = courseRepository;
     }
 
-    /**
-     * Получает все записи на курсы из системы.
-     *
-     * @return список всех записей студентов на курсы
-     */
     public List<Enrollment> findAll() { 
         return enrollmentRepository.findAll(); 
     }
 
     /**
-     * Находит запись на курс по её идентификатору.
-     *
-     * @param id идентификатор записи
-     * @return найденная запись
-     * @throws NoSuchElementException если запись с указанным ID не существует
+     * Возвращает запись на курс по ID. Если запись не найдена, выбрасывает исключение.
      */
     public Enrollment getById(Long id) {
         return enrollmentRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Enrollment not found"));
     }
 
-    /**
-     * Создаёт новую запись на курс.
-     *
-     * @param enrollment запись для создания
-     * @return сохранённая запись с присвоенным ID
-     */
     public Enrollment create(Enrollment enrollment) { 
         return enrollmentRepository.save(enrollment); 
     }
 
     /**
-     * Записывает студента на указанный курс с проверкой дублирования.
-     *
-     * @param courseId идентификатор курса
-     * @param studentId идентификатор студента
-     * @return созданная запись на курс
-     * @throws NoSuchElementException если курс или студент не найдены
-     * @throws IllegalStateException если студент уже записан на этот курс
+     * Записывает студента на курс с проверкой дублирования.
+     * Проверяет существование курса и студента перед записью.
      */
     public Enrollment enrollStudent(Long courseId, Long studentId) {
         Course course = courseRepository.findById(courseId)
@@ -90,11 +66,8 @@ public class EnrollmentService {
     }
 
     /**
-     * Получает все записи указанного студента на различные курсы.
-     *
-     * @param studentId идентификатор студента
-     * @return список записей студента на курсы
-     * @throws NoSuchElementException если студент не найден
+     * Получает все записи указанного студента на курсы.
+     * Проверяет существование студента перед поиском записей.
      */
     public List<Enrollment> getEnrollmentsByStudent(Long studentId) {
         User student = userRepository.findById(studentId)
@@ -104,10 +77,7 @@ public class EnrollmentService {
 
     /**
      * Получает всех студентов, записанных на указанный курс.
-     *
-     * @param courseId идентификатор курса
-     * @return список записей на данный курс
-     * @throws NoSuchElementException если курс не найден
+     * Проверяет существование курса перед поиском записей.
      */
     public List<Enrollment> getEnrollmentsByCourse(Long courseId) {
         Course course = courseRepository.findById(courseId)
@@ -116,27 +86,17 @@ public class EnrollmentService {
     }
 
     /**
-     * Обновляет существующую запись на курс.
-     *
-     * @param id идентификатор обновляемой записи
-     * @param updated обновлённые данные записи
-     * @return сохранённая обновлённая запись
-     * @throws NoSuchElementException если запись с указанным ID не существует
+     * Обновляет существующую запись на курс. Сначала проверяет её существование.
      */
-    public Enrollment update(Long id, Enrollment updated) {
+    public Enrollment update(Long id, Enrollment updatedEnrollment) {
         Enrollment existingEnrollment = getById(id);
-        existingEnrollment.setStudent(updated.getStudent());
-        existingEnrollment.setCourse(updated.getCourse());
-        existingEnrollment.setEnrollDate(updated.getEnrollDate());
-        existingEnrollment.setStatus(updated.getStatus());
+        existingEnrollment.setStudent(updatedEnrollment.getStudent());
+        existingEnrollment.setCourse(updatedEnrollment.getCourse());
+        existingEnrollment.setEnrollDate(updatedEnrollment.getEnrollDate());
+        existingEnrollment.setStatus(updatedEnrollment.getStatus());
         return enrollmentRepository.save(existingEnrollment);
     }
 
-    /**
-     * Удаляет запись на курс из системы.
-     *
-     * @param id идентификатор удаляемой записи
-     */
     public void delete(Long id) { 
         enrollmentRepository.deleteById(id); 
     }
