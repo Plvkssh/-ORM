@@ -5,33 +5,60 @@ import com.example.lms.dto.QuestionResponse;
 import com.example.lms.dto.CreateQuestionRequest;
 import com.example.lms.model.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class QuestionMapper {
-    public static QuestionResponse toResponse(Question question) {
-        QuestionResponse response = new QuestionResponse();
-        response.setId(question.getId());
-        response.setQuizId(question.getQuiz() != null ? question.getQuiz().getId() : null);
-        response.setText(question.getText());
-        response.setType(question.getType());
-        if (question.getOptions() != null) {
-            response.setOptions(question.getOptions().stream().map(option -> {
-                AnswerOptionResponse optionResponse = new AnswerOptionResponse();
-                optionResponse.setId(option.getId());
-                optionResponse.setQuestionId(question.getId());
-                optionResponse.setText(option.getText());
-                optionResponse.setCorrect(option.isCorrect());
-                return optionResponse;
-            }).collect(Collectors.toList()));
+    
+    /**
+     * Преобразует сущность Question в DTO для ответа.
+     * Включает связанные варианты ответов с их преобразованием.
+     */
+    public static QuestionResponse toResponse(Question source) {
+        QuestionResponse target = new QuestionResponse();
+        target.setId(source.getId());
+        
+        Quiz quiz = source.getQuiz();
+        target.setQuizId(quiz != null ? quiz.getId() : null);
+        
+        target.setText(source.getText());
+        target.setType(source.getType());
+        
+        List<AnswerOption> options = source.getOptions();
+        if (options != null) {
+            List<AnswerOptionResponse> optionResponses = options.stream()
+                .map(option -> mapAnswerOption(option, source.getId()))
+                .collect(Collectors.toList());
+            target.setOptions(optionResponses);
         }
-        return response;
+        
+        return target;
     }
 
+    /**
+     * Создает новую сущность Question на основе запроса.
+     * Привязывает вопрос к указанному тесту.
+     */
     public static Question fromRequest(CreateQuestionRequest request, Quiz quiz) {
-        Question question = new Question();
-        question.setQuiz(quiz);
-        question.setText(request.getText());
-        question.setType(request.getType());
-        return question;
+        Question entity = new Question();
+        entity.setQuiz(quiz);
+        entity.setText(request.getText());
+        entity.setType(request.getType());
+        
+        return entity;
+    }
+
+    /**
+     * Преобразует отдельный вариант ответа в DTO.
+     * Приватный вспомогательный метод для улучшения читаемости.
+     */
+    private static AnswerOptionResponse mapAnswerOption(AnswerOption source, Long questionId) {
+        AnswerOptionResponse target = new AnswerOptionResponse();
+        target.setId(source.getId());
+        target.setQuestionId(questionId);
+        target.setText(source.getText());
+        target.setCorrect(source.isCorrect());
+        
+        return target;
     }
 }
