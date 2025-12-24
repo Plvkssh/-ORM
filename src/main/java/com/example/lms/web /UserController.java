@@ -12,10 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Контроллер для управления пользователями через REST API.
- * Предоставляет endpoints для операций CRUD над пользователями различных ролей.
- */
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -26,11 +22,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    /**
-     * Получает всех пользователей системы.
-     *
-     * @return список всех пользователей в формате DTO
-     */
     @GetMapping
     public List<UserResponse> findAll() { 
         return userService.findAll().stream()
@@ -38,48 +29,24 @@ public class UserController {
                 .collect(Collectors.toList()); 
     }
 
-    /**
-     * Находит пользователя по идентификатору.
-     *
-     * @param id идентификатор пользователя
-     * @return пользователь в формате DTO
-     */
     @GetMapping("/{id}")
     public UserResponse getById(@PathVariable Long id) { 
         return UserMapper.toResponse(userService.getById(id)); 
     }
 
-    /**
-     * Создаёт нового пользователя.
-     *
-     * @param request данные для создания пользователя
-     * @return созданный пользователь в формате DTO
-     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse create(@Valid @RequestBody CreateUserRequest request) { 
-        User created = userService.create(UserMapper.fromRequest(request)); 
-        return UserMapper.toResponse(created); 
+        User user = userService.create(UserMapper.fromRequest(request)); 
+        return UserMapper.toResponse(user); 
     }
 
-    /**
-     * Обновляет существующего пользователя.
-     *
-     * @param id идентификатор обновляемого пользователя
-     * @param request обновлённые данные пользователя
-     * @return обновлённый пользователь в формате DTO
-     */
     @PutMapping("/{id}")
     public UserResponse update(@PathVariable Long id, @Valid @RequestBody CreateUserRequest request) { 
-        User updated = userService.update(id, UserMapper.fromRequest(request)); 
-        return UserMapper.toResponse(updated); 
+        User user = userService.update(id, UserMapper.fromRequest(request)); 
+        return UserMapper.toResponse(user); 
     }
 
-    /**
-     * Удаляет пользователя.
-     *
-     * @param id идентификатор удаляемого пользователя
-     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) { 
