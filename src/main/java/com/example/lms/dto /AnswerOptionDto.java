@@ -6,7 +6,6 @@ public class AnswerOptionDto {
     private String text;
     private boolean correct;
 
-    // Конструкторы
     public AnswerOptionDto() {}
     
     public AnswerOptionDto(Long id, Long questionId, String text, boolean correct) {
@@ -16,7 +15,6 @@ public class AnswerOptionDto {
         this.correct = correct;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -47,5 +45,13 @@ public class AnswerOptionDto {
     
     public void setCorrect(boolean correct) { 
         this.correct = correct; 
+    }
+    
+    @Override
+    public String toString() {
+        return "AnswerOptionDto{id=" + id + 
+               ", questionId=" + questionId + 
+               ", text='" + text + '\'' + 
+               ", correct=" + correct + '}';
     }
 }
