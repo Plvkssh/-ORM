@@ -20,7 +20,6 @@ public class Profile {
 
     private String avatarUrl;
 
-    // Конструкторы
     public Profile() {}
     
     public Profile(User user, String bio, String avatarUrl) {
@@ -29,7 +28,6 @@ public class Profile {
         this.avatarUrl = avatarUrl;
     }
 
-    // Геттеры и сеттеры
     public Long getId() {
         return id;
     }
@@ -60,5 +58,13 @@ public class Profile {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+    
+    @Override
+    public String toString() {
+        return "Profile{id=" + id + 
+               ", user=" + (user != null ? user.getId() : "null") + 
+               ", bio='" + bio + '\'' + 
+               ", avatarUrl='" + avatarUrl + '\'' + '}';
     }
 }
