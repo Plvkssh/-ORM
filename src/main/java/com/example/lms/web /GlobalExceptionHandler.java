@@ -1,70 +1,83 @@
 package com.example.lms.web;
 
+import com.example.lms.dto.EnrollmentResponse;
+import com.example.lms.dto.CreateEnrollmentRequest;
+import com.example.lms.mapper.EnrollmentMapper;
+import com.example.lms.model.Course;
+import com.example.lms.model.Enrollment;
+import com.example.lms.model.User;
+import com.example.lms.repository.CourseRepository;
+import com.example.lms.repository.UserRepository;
+import com.example.lms.service.EnrollmentService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
-/**
- * Глобальный обработчик исключений для REST API.
- * Предоставляет единообразные ответы на ошибки для всех контроллеров.
- */
-@ControllerAdvice
-public class GlobalExceptionHandler {
+@RestController
+@RequestMapping("/api/enrollments")
+public class EnrollmentController {
 
-    /**
-     * Обрабатывает исключения при отсутствии сущностей (404 Not Found).
-     * Используется когда не найден курс, студент, задание и т.д.
-     *
-     * @param exception исключение "элемент не найден"
-     * @return ResponseEntity с описанием ошибки и статусом 404
-     */
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<Map<String, Object>> handleNotFound(NoSuchElementException exception) {
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("error", "Not Found");
-        errorResponse.put("message", exception.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    private final EnrollmentService enrollmentService;
+    private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
+
+    public EnrollmentController(EnrollmentService enrollmentService, 
+                               UserRepository userRepository, 
+                               CourseRepository courseRepository) {
+        this.enrollmentService = enrollmentService;
+        this.userRepository = userRepository;
+        this.courseRepository = courseRepository;
+    }
+
+    @GetMapping
+    public List<EnrollmentResponse> findAll() { 
+        return enrollmentService.findAll().stream()
+                .map(EnrollmentMapper::toResponse)
+                .collect(Collectors.toList()); 
+    }
+
+    @GetMapping("/{id}")
+    public EnrollmentResponse getById(@PathVariable Long id) { 
+        return EnrollmentMapper.toResponse(enrollmentService.getById(id)); 
     }
 
     /**
-     * Обрабатывает ошибки валидации входных данных (400 Bad Request).
-     * Собирает все ошибки валидации по полям для удобного отображения клиенту.
-     *
-     * @param exception исключение валидации данных
-     * @return ResponseEntity с детализацией ошибок валидации и статусом 400
+     * Создает новую запись на курс. Проверяет существование студента и курса.
      */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException exception) {
-        Map<String, String> validationErrors = new HashMap<>();
-        for (FieldError fieldError : exception.getBindingResult().getFieldErrors()) {
-            validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
-        }
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public EnrollmentResponse create(@Valid @RequestBody CreateEnrollmentRequest request) {
+        User student = userRepository.findById(request.getStudentId())
+                .orElseThrow(() -> new NoSuchElementException("Student not found with id: " + request.getStudentId()));
+        Course course = courseRepository.findById(request.getCourseId())
+                .orElseThrow(() -> new NoSuchElementException("Course not found with id: " + request.getCourseId()));
         
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("error", "Validation failed");
-        errorResponse.put("details", validationErrors);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        Enrollment enrollment = enrollmentService.create(EnrollmentMapper.fromRequest(request, student, course));
+        return EnrollmentMapper.toResponse(enrollment);
     }
 
     /**
-     * Обрабатывает бизнес-ошибки (400 Bad Request).
-     * Используется для нарушений бизнес-правил, например, попытка повторной записи на курс.
-     *
-     * @param exception исключение нарушения бизнес-правил
-     * @return ResponseEntity с описанием ошибки и статусом 400
+     * Обновляет существующую запись. Проверяет существование записи, студента и курса.
      */
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<Map<String, Object>> handleIllegalState(IllegalStateException exception) {
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("error", "Invalid operation");
-        errorResponse.put("message", exception.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    @PutMapping("/{id}")
+    public EnrollmentResponse update(@PathVariable Long id, @Valid @RequestBody CreateEnrollmentRequest request) {
+        Enrollment existingEnrollment = enrollmentService.getById(id);
+        User student = userRepository.findById(request.getStudentId())
+                .orElseThrow(() -> new NoSuchElementException("Student not found with id: " + request.getStudentId()));
+        Course course = courseRepository.findById(request.getCourseId())
+                .orElseThrow(() -> new NoSuchElementException("Course not found with id: " + request.getCourseId()));
+        
+        Enrollment enrollment = enrollmentService.update(id, EnrollmentMapper.fromRequest(request, student, course));
+        return EnrollmentMapper.toResponse(enrollment);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) { 
+        enrollmentService.delete(id); 
     }
 }
