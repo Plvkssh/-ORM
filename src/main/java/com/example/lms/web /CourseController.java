@@ -15,10 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Контроллер для управления курсами через REST API.
- * Предоставляет endpoints для создания, получения, обновления и удаления курсов.
- */
 @RestController
 @RequestMapping("/api/courses")
 public class CourseController {
@@ -36,11 +32,6 @@ public class CourseController {
         this.tagRepository = tagRepository;
     }
 
-    /**
-     * Получает все курсы.
-     *
-     * @return список всех курсов в формате DTO
-     */
     @GetMapping
     public List<CourseResponse> findAll() { 
         return courseService.findAll().stream()
@@ -48,23 +39,13 @@ public class CourseController {
                 .collect(Collectors.toList()); 
     }
 
-    /**
-     * Находит курс по идентификатору.
-     *
-     * @param id идентификатор курса
-     * @return курс в формате DTO
-     */
     @GetMapping("/{id}")
     public CourseResponse getById(@PathVariable Long id) { 
         return CourseMapper.toResponse(courseService.getById(id)); 
     }
 
     /**
-     * Создаёт новый курс.
-     *
-     * @param request данные для создания курса
-     * @return созданный курс в формате DTO
-     * @throws NoSuchElementException если преподаватель или тег не найдены
+     * Создает новый курс. Проверяет существование преподавателя и тегов.
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -82,12 +63,7 @@ public class CourseController {
     }
 
     /**
-     * Обновляет существующий курс.
-     *
-     * @param id идентификатор обновляемого курса
-     * @param request обновлённые данные курса
-     * @return обновлённый курс в формате DTO
-     * @throws NoSuchElementException если преподаватель или тег не найдены
+     * Обновляет существующий курс. Проверяет существование курса, преподавателя и тегов.
      */
     @PutMapping("/{id}")
     public CourseResponse update(@PathVariable Long id, @Valid @RequestBody CreateCourseRequest request) {
@@ -104,11 +80,6 @@ public class CourseController {
         return CourseMapper.toResponse(courseService.update(id, existingCourse));
     }
 
-    /**
-     * Удаляет курс.
-     *
-     * @param id идентификатор удаляемого курса
-     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) { 
