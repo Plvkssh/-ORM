@@ -26,7 +26,6 @@ public class Question {
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AnswerOption> options = new ArrayList<>();
 
-    // Конструкторы
     public Question() {}
     
     public Question(Quiz quiz, String text, QuestionType type) {
@@ -35,7 +34,6 @@ public class Question {
         this.type = type;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -74,5 +72,13 @@ public class Question {
     
     public void setOptions(List<AnswerOption> options) { 
         this.options = options; 
+    }
+    
+    @Override
+    public String toString() {
+        return "Question{id=" + id + 
+               ", quiz=" + (quiz != null ? quiz.getId() : "null") + 
+               ", text='" + text + '\'' + 
+               ", type=" + type + '}';
     }
 }
