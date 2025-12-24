@@ -8,7 +8,6 @@ public class UserResponse {
     private String email;
     private UserRole role;
 
-    // Конструкторы
     public UserResponse() {}
     
     public UserResponse(Long id, String name, String email, UserRole role) {
@@ -18,7 +17,6 @@ public class UserResponse {
         this.role = role;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -49,5 +47,13 @@ public class UserResponse {
     
     public void setRole(UserRole role) { 
         this.role = role; 
+    }
+    
+    @Override
+    public String toString() {
+        return "UserResponse{id=" + id + 
+               ", name='" + name + '\'' + 
+               ", email='" + email + '\'' + 
+               ", role=" + role + '}';
     }
 }
