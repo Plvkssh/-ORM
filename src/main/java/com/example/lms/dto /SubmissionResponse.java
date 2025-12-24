@@ -11,7 +11,6 @@ public class SubmissionResponse {
     private Integer score;
     private String feedback;
 
-    // Конструкторы
     public SubmissionResponse() {}
     
     public SubmissionResponse(Long id, Long assignmentId, Long studentId, LocalDateTime submittedAt,
@@ -25,7 +24,6 @@ public class SubmissionResponse {
         this.feedback = feedback;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -80,5 +78,16 @@ public class SubmissionResponse {
     
     public void setFeedback(String feedback) { 
         this.feedback = feedback; 
+    }
+    
+    @Override
+    public String toString() {
+        return "SubmissionResponse{id=" + id + 
+               ", assignmentId=" + assignmentId + 
+               ", studentId=" + studentId + 
+               ", submittedAt=" + submittedAt + 
+               ", content='" + content + '\'' + 
+               ", score=" + score + 
+               ", feedback='" + feedback + '\'' + '}';
     }
 }
