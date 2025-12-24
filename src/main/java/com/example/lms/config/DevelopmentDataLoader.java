@@ -14,196 +14,219 @@ import java.time.LocalDate;
 public class DevelopmentDataLoader {
 
     @Bean
-    CommandLineRunner initializeDemoData(UserRepository userRepository, 
-                                        CategoryRepository categoryRepository, 
-                                        CourseRepository courseRepository,
-                                        ModuleRepository moduleRepository, 
-                                        LessonRepository lessonRepository, 
-                                        AssignmentRepository assignmentRepository,
-                                        EnrollmentRepository enrollmentRepository, 
-                                        SubmissionRepository submissionRepository,
-                                        QuizRepository quizRepository, 
-                                        QuestionRepository questionRepository, 
-                                        AnswerOptionRepository answerOptionRepository) {
+    CommandLineRunner initializeDemoData(
+            UserRepository userRepository,
+            CategoryRepository categoryRepository,
+            CourseRepository courseRepository,
+            ModuleRepository moduleRepository,
+            LessonRepository lessonRepository,
+            AssignmentRepository assignmentRepository,
+            EnrollmentRepository enrollmentRepository,
+            QuizRepository quizRepository,
+            QuestionRepository questionRepository,
+            AnswerOptionRepository answerOptionRepository
+    ) {
         return args -> {
-            // Создание пользователей
             User teacher = createTeacher(userRepository);
             User student = createStudent(userRepository);
             
-            // Создание категории и курса
-            Category programmingCategory = createProgrammingCategory(categoryRepository);
-            Course springCourse = createSpringCourse(courseRepository, programmingCategory, teacher);
+            Category programmingCategory = createCategory(categoryRepository, "Programming");
+            Course springCourse = createCourse(
+                courseRepository,
+                "Основы Spring",
+                "Изучение Spring Framework и Spring Boot для создания современных Java-приложений",
+                programmingCategory,
+                teacher
+            );
             
-            // Создание модулей и учебных материалов
-            createIntroductionModule(moduleRepository, lessonRepository, assignmentRepository, springCourse);
-            createSpringBootModule(moduleRepository, lessonRepository, assignmentRepository, springCourse);
-            createDataJpaModule(moduleRepository, lessonRepository, assignmentRepository, springCourse);
+            createModuleWithContent(
+                moduleRepository, lessonRepository, assignmentRepository,
+                springCourse, 1, "Введение в Spring Framework",
+                new String[]{"Введение в Spring", "Dependency Injection и IoC"},
+                new String[]{"ДЗ: Настройка первого Spring приложения", "ДЗ: Практика с Dependency Injection"}
+            );
             
-            // Запись студента на курс
+            createModuleWithContent(
+                moduleRepository, lessonRepository, assignmentRepository,
+                springCourse, 2, "Spring Boot",
+                new String[]{"Основы Spring Boot", "Spring Boot Auto-Configuration"},
+                new String[]{"ДЗ: Создание REST API с Spring Boot"}
+            );
+            
+            createModuleWithContent(
+                moduleRepository, lessonRepository, assignmentRepository,
+                springCourse, 3, "Spring Data JPA",
+                new String[]{"Работа с Spring Data JPA"},
+                new String[]{"ДЗ: Создание репозиториев и сущностей"}
+            );
+            
             enrollStudent(enrollmentRepository, springCourse, student);
-            
-            // Создание тестов и вопросов
-            createSpringBasicsQuiz(quizRepository, questionRepository, answerOptionRepository);
-            createSpringBootQuiz(quizRepository, questionRepository, answerOptionRepository);
+            createQuizzes(quizRepository, questionRepository, answerOptionRepository);
         };
     }
 
     private User createTeacher(UserRepository userRepository) {
-        User teacher = new User();
-        teacher.setName("Teacher One");
-        teacher.setEmail("teacher1@example.com");
-        teacher.setRole(UserRole.TEACHER);
-        return userRepository.save(teacher);
+        return saveUser(userRepository, "Teacher One", "teacher1@example.com", UserRole.TEACHER);
     }
 
     private User createStudent(UserRepository userRepository) {
-        User student = new User();
-        student.setName("Student One");
-        student.setEmail("student1@example.com");
-        student.setRole(UserRole.STUDENT);
-        return userRepository.save(student);
+        return saveUser(userRepository, "Student One", "student1@example.com", UserRole.STUDENT);
     }
 
-    private Category createProgrammingCategory(CategoryRepository categoryRepository) {
+    private User saveUser(UserRepository userRepository, String name, String email, UserRole role) {
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        user.setRole(role);
+        return userRepository.save(user);
+    }
+
+    private Category createCategory(CategoryRepository repository, String name) {
         Category category = new Category();
-        category.setName("Programming");
-        return categoryRepository.save(category);
+        category.setName(name);
+        return repository.save(category);
     }
 
-    private Course createSpringCourse(CourseRepository courseRepository, Category category, User teacher) {
+    private Course createCourse(CourseRepository repository, String title, String description,
+                               Category category, User teacher) {
         Course course = new Course();
-        course.setTitle("Основы Spring");
-        course.setDescription("Изучение Spring Framework и Spring Boot для создания современных Java-приложений");
+        course.setTitle(title);
+        course.setDescription(description);
         course.setCategory(category);
         course.setTeacher(teacher);
         course.setStartDate(LocalDate.now());
-        return courseRepository.save(course);
+        return repository.save(course);
     }
 
-    private void createIntroductionModule(ModuleRepository moduleRepository, LessonRepository lessonRepository, 
-                                        AssignmentRepository assignmentRepository, Course course) {
-        Module introModule = new Module();
-        introModule.setCourse(course);
-        introModule.setTitle("Введение в Spring Framework");
-        introModule.setOrderIndex(1);
-        introModule = moduleRepository.save(introModule);
-
-        Lesson introLesson = createLesson(lessonRepository, introModule, "Введение в Spring");
-        Lesson diLesson = createLesson(lessonRepository, introModule, "Dependency Injection и IoC");
-
-        createAssignment(assignmentRepository, introLesson, "ДЗ: Настройка первого Spring приложения");
-        createAssignment(assignmentRepository, diLesson, "ДЗ: Практика с Dependency Injection");
+    private void createModuleWithContent(
+            ModuleRepository moduleRepository,
+            LessonRepository lessonRepository,
+            AssignmentRepository assignmentRepository,
+            Course course,
+            int orderIndex,
+            String moduleTitle,
+            String[] lessonTitles,
+            String[] assignmentTitles
+    ) {
+        Module module = new Module();
+        module.setCourse(course);
+        module.setTitle(moduleTitle);
+        module.setOrderIndex(orderIndex);
+        module = moduleRepository.save(module);
+        
+        for (int i = 0; i < lessonTitles.length; i++) {
+            Lesson lesson = createLesson(lessonRepository, module, lessonTitles[i]);
+            
+            if (i < assignmentTitles.length) {
+                createAssignment(assignmentRepository, lesson, assignmentTitles[i]);
+            }
+        }
     }
 
-    private void createSpringBootModule(ModuleRepository moduleRepository, LessonRepository lessonRepository,
-                                      AssignmentRepository assignmentRepository, Course course) {
-        Module bootModule = new Module();
-        bootModule.setCourse(course);
-        bootModule.setTitle("Spring Boot");
-        bootModule.setOrderIndex(2);
-        bootModule = moduleRepository.save(bootModule);
-
-        Lesson bootBasicsLesson = createLesson(lessonRepository, bootModule, "Основы Spring Boot");
-        Lesson autoConfigLesson = createLesson(lessonRepository, bootModule, "Spring Boot Auto-Configuration");
-
-        createAssignment(assignmentRepository, bootBasicsLesson, "ДЗ: Создание REST API с Spring Boot");
-    }
-
-    private void createDataJpaModule(ModuleRepository moduleRepository, LessonRepository lessonRepository,
-                                   AssignmentRepository assignmentRepository, Course course) {
-        Module dataModule = new Module();
-        dataModule.setCourse(course);
-        dataModule.setTitle("Spring Data JPA");
-        dataModule.setOrderIndex(3);
-        dataModule = moduleRepository.save(dataModule);
-
-        Lesson jpaLesson = createLesson(lessonRepository, dataModule, "Работа с Spring Data JPA");
-        createAssignment(assignmentRepository, jpaLesson, "ДЗ: Создание репозиториев и сущностей");
-    }
-
-    private Lesson createLesson(LessonRepository lessonRepository, Module module, String title) {
+    private Lesson createLesson(LessonRepository repository, Module module, String title) {
         Lesson lesson = new Lesson();
         lesson.setModule(module);
         lesson.setTitle(title);
-        return lessonRepository.save(lesson);
+        return repository.save(lesson);
     }
 
-    private void createAssignment(AssignmentRepository assignmentRepository, Lesson lesson, String title) {
+    private void createAssignment(AssignmentRepository repository, Lesson lesson, String title) {
         Assignment assignment = new Assignment();
         assignment.setLesson(lesson);
         assignment.setTitle(title);
-        assignmentRepository.save(assignment);
+        repository.save(assignment);
     }
 
-    private void enrollStudent(EnrollmentRepository enrollmentRepository, Course course, User student) {
+    private void enrollStudent(EnrollmentRepository repository, Course course, User student) {
         Enrollment enrollment = new Enrollment();
         enrollment.setCourse(course);
         enrollment.setStudent(student);
-        enrollmentRepository.save(enrollment);
+        repository.save(enrollment);
     }
 
-    private void createSpringBasicsQuiz(QuizRepository quizRepository, QuestionRepository questionRepository,
-                                      AnswerOptionRepository answerOptionRepository) {
-        Quiz springBasicsQuiz = new Quiz();
-        springBasicsQuiz.setTitle("Тест: Основы Spring Framework");
-        springBasicsQuiz = quizRepository.save(springBasicsQuiz);
-
-        createIoCQuestion(questionRepository, answerOptionRepository, springBasicsQuiz);
-        createDIQuestion(questionRepository, answerOptionRepository, springBasicsQuiz);
+    private void createQuizzes(
+            QuizRepository quizRepository,
+            QuestionRepository questionRepository,
+            AnswerOptionRepository answerOptionRepository
+    ) {
+        createQuizWithQuestions(
+            quizRepository, questionRepository, answerOptionRepository,
+            "Тест: Основы Spring Framework",
+            new QuizQuestion[]{
+                new QuizQuestion(
+                    "Что означает IoC в Spring?",
+                    QuestionType.SINGLE_CHOICE,
+                    new Answer[]{
+                        new Answer("Inversion of Control", true),
+                        new Answer("Input of Control", false),
+                        new Answer("Integration of Components", false)
+                    }
+                ),
+                new QuizQuestion(
+                    "Что такое Dependency Injection?",
+                    QuestionType.SINGLE_CHOICE,
+                    new Answer[]{
+                        new Answer("Паттерн внедрения зависимостей", true),
+                        new Answer("Метод инъекции кода", false)
+                    }
+                )
+            }
+        );
+        
+        createQuizWithQuestions(
+            quizRepository, questionRepository, answerOptionRepository,
+            "Тест: Spring Boot",
+            new QuizQuestion[]{
+                new QuizQuestion(
+                    "Какой аннотацией отмечается главный класс Spring Boot приложения?",
+                    QuestionType.SINGLE_CHOICE,
+                    new Answer[]{
+                        new Answer("@SpringBootApplication", true),
+                        new Answer("@SpringApplication", false)
+                    }
+                )
+            }
+        );
     }
 
-    private void createSpringBootQuiz(QuizRepository quizRepository, QuestionRepository questionRepository,
-                                    AnswerOptionRepository answerOptionRepository) {
-        Quiz bootQuiz = new Quiz();
-        bootQuiz.setTitle("Тест: Spring Boot");
-        bootQuiz = quizRepository.save(bootQuiz);
-
-        createBootAnnotationQuestion(questionRepository, answerOptionRepository, bootQuiz);
+    private void createQuizWithQuestions(
+            QuizRepository quizRepository,
+            QuestionRepository questionRepository,
+            AnswerOptionRepository answerOptionRepository,
+            String quizTitle,
+            QuizQuestion[] questions
+    ) {
+        Quiz quiz = new Quiz();
+        quiz.setTitle(quizTitle);
+        quiz = quizRepository.save(quiz);
+        
+        for (QuizQuestion quizQuestion : questions) {
+            Question question = new Question();
+            question.setQuiz(quiz);
+            question.setText(quizQuestion.text());
+            question.setType(quizQuestion.type());
+            question = questionRepository.save(question);
+            
+            for (Answer answer : quizQuestion.answers()) {
+                createAnswerOption(answerOptionRepository, question, answer.text(), answer.isCorrect());
+            }
+        }
     }
 
-    private void createIoCQuestion(QuestionRepository questionRepository, AnswerOptionRepository answerOptionRepository,
-                                 Quiz quiz) {
-        Question question = new Question();
-        question.setQuiz(quiz);
-        question.setText("Что означает IoC в Spring?");
-        question.setType(QuestionType.SINGLE_CHOICE);
-        question = questionRepository.save(question);
-
-        createAnswerOption(answerOptionRepository, question, "Inversion of Control", true);
-        createAnswerOption(answerOptionRepository, question, "Input of Control", false);
-        createAnswerOption(answerOptionRepository, question, "Integration of Components", false);
-    }
-
-    private void createDIQuestion(QuestionRepository questionRepository, AnswerOptionRepository answerOptionRepository,
-                                Quiz quiz) {
-        Question question = new Question();
-        question.setQuiz(quiz);
-        question.setText("Что такое Dependency Injection?");
-        question.setType(QuestionType.SINGLE_CHOICE);
-        question = questionRepository.save(question);
-
-        createAnswerOption(answerOptionRepository, question, "Паттерн внедрения зависимостей", true);
-        createAnswerOption(answerOptionRepository, question, "Метод инъекции кода", false);
-    }
-
-    private void createBootAnnotationQuestion(QuestionRepository questionRepository, 
-                                           AnswerOptionRepository answerOptionRepository, Quiz quiz) {
-        Question question = new Question();
-        question.setQuiz(quiz);
-        question.setText("Какой аннотацией отмечается главный класс Spring Boot приложения?");
-        question.setType(QuestionType.SINGLE_CHOICE);
-        question = questionRepository.save(question);
-
-        createAnswerOption(answerOptionRepository, question, "@SpringBootApplication", true);
-        createAnswerOption(answerOptionRepository, question, "@SpringApplication", false);
-    }
-
-    private void createAnswerOption(AnswerOptionRepository answerOptionRepository, Question question, 
-                                  String text, boolean isCorrect) {
+    private void createAnswerOption(
+            AnswerOptionRepository repository,
+            Question question,
+            String text,
+            boolean isCorrect
+    ) {
         AnswerOption option = new AnswerOption();
         option.setQuestion(question);
         option.setText(text);
         option.setCorrect(isCorrect);
-        answerOptionRepository.save(option);
+        repository.save(option);
     }
+    
+    // Вспомогательные record-классы для структурирования данных тестов
+    private record QuizQuestion(String text, QuestionType type, Answer[] answers) {}
+    private record Answer(String text, boolean isCorrect) {}
 }
