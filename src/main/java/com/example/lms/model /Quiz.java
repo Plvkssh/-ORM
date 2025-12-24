@@ -27,7 +27,6 @@ public class Quiz {
     @OneToMany(mappedBy = "quiz", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuizSubmission> quizSubmissions = new ArrayList<>();
 
-    // Конструкторы
     public Quiz() {}
     
     public Quiz(Module module, String title, Integer timeLimitMinutes) {
@@ -36,7 +35,6 @@ public class Quiz {
         this.timeLimitMinutes = timeLimitMinutes;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -83,5 +81,13 @@ public class Quiz {
     
     public void setQuizSubmissions(List<QuizSubmission> quizSubmissions) { 
         this.quizSubmissions = quizSubmissions; 
+    }
+    
+    @Override
+    public String toString() {
+        return "Quiz{id=" + id + 
+               ", module=" + (module != null ? module.getId() : "null") + 
+               ", title='" + title + '\'' + 
+               ", timeLimitMinutes=" + timeLimitMinutes + '}';
     }
 }
