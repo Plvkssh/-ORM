@@ -6,7 +6,6 @@ public class QuizResponse {
     private String title;
     private Integer timeLimitMinutes;
 
-    // Конструкторы
     public QuizResponse() {}
     
     public QuizResponse(Long id, Long moduleId, String title, Integer timeLimitMinutes) {
@@ -16,7 +15,6 @@ public class QuizResponse {
         this.timeLimitMinutes = timeLimitMinutes;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -47,5 +45,13 @@ public class QuizResponse {
     
     public void setTimeLimitMinutes(Integer timeLimitMinutes) { 
         this.timeLimitMinutes = timeLimitMinutes; 
+    }
+    
+    @Override
+    public String toString() {
+        return "QuizResponse{id=" + id + 
+               ", moduleId=" + moduleId + 
+               ", title='" + title + '\'' + 
+               ", timeLimitMinutes=" + timeLimitMinutes + '}';
     }
 }
