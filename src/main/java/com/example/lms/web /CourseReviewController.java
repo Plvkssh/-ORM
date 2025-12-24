@@ -17,10 +17,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-/**
- * Контроллер для управления отзывами на курсы через REST API.
- * Предоставляет endpoints для операций с отзывами студентов о пройденных курсах.
- */
 @RestController
 @RequestMapping("/api/reviews")
 public class CourseReviewController {
@@ -37,11 +33,6 @@ public class CourseReviewController {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Получает все отзывы на курсы.
-     *
-     * @return список всех отзывов в формате DTO
-     */
     @GetMapping
     public List<CourseReviewResponse> findAll() { 
         return courseReviewService.findAll().stream()
@@ -49,23 +40,13 @@ public class CourseReviewController {
                 .collect(Collectors.toList()); 
     }
 
-    /**
-     * Находит отзыв по идентификатору.
-     *
-     * @param id идентификатор отзыва
-     * @return отзыв в формате DTO
-     */
     @GetMapping("/{id}")
     public CourseReviewResponse getById(@PathVariable Long id) { 
         return CourseReviewMapper.toResponse(courseReviewService.getById(id)); 
     }
 
     /**
-     * Создаёт новый отзыв на курс.
-     *
-     * @param request данные для создания отзыва
-     * @return созданный отзыв в формате DTO
-     * @throws NoSuchElementException если курс или студент не найдены
+     * Создает новый отзыв на курс. Проверяет существование курса и студента.
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -79,12 +60,7 @@ public class CourseReviewController {
     }
 
     /**
-     * Обновляет существующий отзыв.
-     *
-     * @param id идентификатор обновляемого отзыва
-     * @param request обновлённые данные отзыва
-     * @return обновлённый отзыв в формате DTO
-     * @throws NoSuchElementException если курс или студент не найдены
+     * Обновляет существующий отзыв. Проверяет существование курса и студента.
      */
     @PutMapping("/{id}")
     public CourseReviewResponse update(@PathVariable Long id, @Valid @RequestBody CreateCourseReviewRequest request) {
@@ -96,11 +72,6 @@ public class CourseReviewController {
         return CourseReviewMapper.toResponse(updated);
     }
 
-    /**
-     * Удаляет отзыв.
-     *
-     * @param id идентификатор удаляемого отзыва
-     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) { 
