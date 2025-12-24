@@ -31,7 +31,6 @@ public class Assignment {
     @OneToMany(mappedBy = "assignment", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Submission> submissions = new ArrayList<>();
 
-    // Конструкторы
     public Assignment() {}
     
     public Assignment(Lesson lesson, String title, String description, LocalDateTime dueDate, Integer maxScore) {
@@ -42,7 +41,6 @@ public class Assignment {
         this.maxScore = maxScore;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -97,5 +95,15 @@ public class Assignment {
     
     public void setSubmissions(List<Submission> submissions) { 
         this.submissions = submissions; 
+    }
+    
+    @Override
+    public String toString() {
+        return "Assignment{id=" + id + 
+               ", lesson=" + (lesson != null ? lesson.getId() : "null") + 
+               ", title='" + title + '\'' + 
+               ", description='" + description + '\'' + 
+               ", dueDate=" + dueDate + 
+               ", maxScore=" + maxScore + '}';
     }
 }
