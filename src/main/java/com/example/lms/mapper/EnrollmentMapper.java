@@ -7,26 +7,44 @@ import com.example.lms.model.Enrollment;
 import com.example.lms.model.User;
 
 public class EnrollmentMapper {
-    public static EnrollmentResponse toResponse(Enrollment enrollment) {
-        EnrollmentResponse response = new EnrollmentResponse();
-        response.setId(enrollment.getId());
-        response.setStudentId(enrollment.getStudent() != null ? enrollment.getStudent().getId() : null);
-        response.setCourseId(enrollment.getCourse() != null ? enrollment.getCourse().getId() : null);
-        response.setEnrollDate(enrollment.getEnrollDate());
-        response.setStatus(enrollment.getStatus());
-        return response;
+    
+    /**
+     * Преобразует сущность Enrollment в DTO для ответа.
+     * Извлекает ID связанных студента и курса.
+     */
+    public static EnrollmentResponse toResponse(Enrollment source) {
+        EnrollmentResponse target = new EnrollmentResponse();
+        target.setId(source.getId());
+        
+        User student = source.getStudent();
+        target.setStudentId(student != null ? student.getId() : null);
+        
+        Course course = source.getCourse();
+        target.setCourseId(course != null ? course.getId() : null);
+        
+        target.setEnrollDate(source.getEnrollDate());
+        target.setStatus(source.getStatus());
+        
+        return target;
     }
 
+    /**
+     * Создает новую сущность Enrollment на основе запроса.
+     * Устанавливает опциональные поля только если они предоставлены в запросе.
+     */
     public static Enrollment fromRequest(CreateEnrollmentRequest request, User student, Course course) {
-        Enrollment enrollment = new Enrollment();
-        enrollment.setStudent(student);
-        enrollment.setCourse(course);
+        Enrollment entity = new Enrollment();
+        entity.setStudent(student);
+        entity.setCourse(course);
+        
         if (request.getEnrollDate() != null) {
-            enrollment.setEnrollDate(request.getEnrollDate());
+            entity.setEnrollDate(request.getEnrollDate());
         }
+        
         if (request.getStatus() != null) {
-            enrollment.setStatus(request.getStatus());
+            entity.setStatus(request.getStatus());
         }
-        return enrollment;
+        
+        return entity;
     }
 }
