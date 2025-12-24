@@ -20,14 +20,12 @@ public class Category {
     @OneToMany(mappedBy = "category")
     private List<Course> courses = new ArrayList<>();
 
-    // Конструкторы
     public Category() {}
     
     public Category(String name) {
         this.name = name;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -50,5 +48,11 @@ public class Category {
     
     public void setCourses(List<Course> courses) { 
         this.courses = courses; 
+    }
+    
+    @Override
+    public String toString() {
+        return "Category{id=" + id + 
+               ", name='" + name + '\'' + '}';
     }
 }
