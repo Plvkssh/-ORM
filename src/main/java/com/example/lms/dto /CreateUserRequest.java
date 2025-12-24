@@ -16,7 +16,6 @@ public class CreateUserRequest {
     @NotNull(message = "Роль пользователя должна быть указана")
     private UserRole role;
 
-    // Конструкторы
     public CreateUserRequest() {}
     
     public CreateUserRequest(String name, String email, UserRole role) {
@@ -25,7 +24,6 @@ public class CreateUserRequest {
         this.role = role;
     }
 
-    // Геттеры и сеттеры
     public String getName() { 
         return name; 
     }
@@ -48,5 +46,12 @@ public class CreateUserRequest {
     
     public void setRole(UserRole role) { 
         this.role = role; 
+    }
+    
+    @Override
+    public String toString() {
+        return "CreateUserRequest{name='" + name + '\'' + 
+               ", email='" + email + '\'' + 
+               ", role=" + role + '}';
     }
 }
