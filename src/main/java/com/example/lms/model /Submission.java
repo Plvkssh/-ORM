@@ -32,7 +32,6 @@ public class Submission {
     @Column(length = 2000)
     private String feedback;
 
-    // Конструкторы
     public Submission() {}
     
     public Submission(Assignment assignment, User student, String content) {
@@ -41,7 +40,6 @@ public class Submission {
         this.content = content;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -96,5 +94,16 @@ public class Submission {
     
     public void setFeedback(String feedback) { 
         this.feedback = feedback; 
+    }
+    
+    @Override
+    public String toString() {
+        return "Submission{id=" + id + 
+               ", assignment=" + (assignment != null ? assignment.getId() : "null") + 
+               ", student=" + (student != null ? student.getId() : "null") + 
+               ", submittedAt=" + submittedAt + 
+               ", content='" + content + '\'' + 
+               ", score=" + score + 
+               ", feedback='" + feedback + '\'' + '}';
     }
 }
