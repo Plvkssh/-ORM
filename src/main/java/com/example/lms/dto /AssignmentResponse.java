@@ -10,7 +10,6 @@ public class AssignmentResponse {
     private LocalDateTime dueDate;
     private Integer maxScore;
 
-    // Конструкторы
     public AssignmentResponse() {}
     
     public AssignmentResponse(Long id, Long lessonId, String title, String description, 
@@ -23,7 +22,6 @@ public class AssignmentResponse {
         this.maxScore = maxScore;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -70,5 +68,15 @@ public class AssignmentResponse {
     
     public void setMaxScore(Integer maxScore) { 
         this.maxScore = maxScore; 
+    }
+    
+    @Override
+    public String toString() {
+        return "AssignmentResponse{id=" + id + 
+               ", lessonId=" + lessonId + 
+               ", title='" + title + '\'' + 
+               ", description='" + description + '\'' + 
+               ", dueDate=" + dueDate + 
+               ", maxScore=" + maxScore + '}';
     }
 }
