@@ -5,20 +5,29 @@ import com.example.lms.dto.CreateUserRequest;
 import com.example.lms.model.User;
 
 public class UserMapper {
-    public static UserResponse toResponse(User user) {
-        UserResponse response = new UserResponse();
-        response.setId(user.getId());
-        response.setName(user.getName());
-        response.setEmail(user.getEmail());
-        response.setRole(user.getRole());
-        return response;
+    
+    /**
+     * Преобразует сущность User в DTO для ответа.
+     */
+    public static UserResponse toResponse(User source) {
+        UserResponse target = new UserResponse();
+        target.setId(source.getId());
+        target.setName(source.getName());
+        target.setEmail(source.getEmail());
+        target.setRole(source.getRole());
+        
+        return target;
     }
 
+    /**
+     * Создает новую сущность User на основе запроса.
+     */
     public static User fromRequest(CreateUserRequest request) {
-        User user = new User();
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setRole(request.getRole());
-        return user;
+        User entity = new User();
+        entity.setName(request.getName());
+        entity.setEmail(request.getEmail());
+        entity.setRole(request.getRole());
+        
+        return entity;
     }
 }
