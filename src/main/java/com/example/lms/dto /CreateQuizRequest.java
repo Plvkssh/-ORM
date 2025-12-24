@@ -12,7 +12,6 @@ public class CreateQuizRequest {
     
     private Integer timeLimitMinutes;
 
-    // Конструкторы
     public CreateQuizRequest() {}
     
     public CreateQuizRequest(Long moduleId, String title, Integer timeLimitMinutes) {
@@ -21,7 +20,6 @@ public class CreateQuizRequest {
         this.timeLimitMinutes = timeLimitMinutes;
     }
 
-    // Геттеры и сеттеры
     public Long getModuleId() { 
         return moduleId; 
     }
@@ -44,5 +42,12 @@ public class CreateQuizRequest {
     
     public void setTimeLimitMinutes(Integer timeLimitMinutes) { 
         this.timeLimitMinutes = timeLimitMinutes; 
+    }
+    
+    @Override
+    public String toString() {
+        return "CreateQuizRequest{moduleId=" + moduleId + 
+               ", title='" + title + '\'' + 
+               ", timeLimitMinutes=" + timeLimitMinutes + '}';
     }
 }
