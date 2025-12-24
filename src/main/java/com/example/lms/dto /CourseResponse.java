@@ -13,7 +13,6 @@ public class CourseResponse {
     private Long teacherId;
     private Set<Long> tagIds;
 
-    // Конструкторы
     public CourseResponse() {}
     
     public CourseResponse(Long id, String title, String description, String duration, 
@@ -28,7 +27,6 @@ public class CourseResponse {
         this.tagIds = tagIds;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -91,5 +89,17 @@ public class CourseResponse {
     
     public void setTagIds(Set<Long> tagIds) { 
         this.tagIds = tagIds; 
+    }
+    
+    @Override
+    public String toString() {
+        return "CourseResponse{id=" + id + 
+               ", title='" + title + '\'' + 
+               ", description='" + description + '\'' + 
+               ", duration='" + duration + '\'' + 
+               ", startDate=" + startDate + 
+               ", categoryId=" + categoryId + 
+               ", teacherId=" + teacherId + 
+               ", tagIds=" + tagIds + '}';
     }
 }
