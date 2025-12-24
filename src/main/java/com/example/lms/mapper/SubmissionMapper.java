@@ -7,23 +7,40 @@ import com.example.lms.model.Submission;
 import com.example.lms.model.User;
 
 public class SubmissionMapper {
-    public static SubmissionResponse toResponse(Submission submission) {
-        SubmissionResponse response = new SubmissionResponse();
-        response.setId(submission.getId());
-        response.setAssignmentId(submission.getAssignment() != null ? submission.getAssignment().getId() : null);
-        response.setStudentId(submission.getStudent() != null ? submission.getStudent().getId() : null);
-        response.setSubmittedAt(submission.getSubmittedAt());
-        response.setContent(submission.getContent());
-        response.setScore(submission.getScore());
-        response.setFeedback(submission.getFeedback());
-        return response;
+    
+    /**
+     * Преобразует сущность Submission в DTO для ответа.
+     * Извлекает ID связанных задания и студента.
+     */
+    public static SubmissionResponse toResponse(Submission source) {
+        SubmissionResponse target = new SubmissionResponse();
+        target.setId(source.getId());
+        
+        Assignment assignment = source.getAssignment();
+        target.setAssignmentId(assignment != null ? assignment.getId() : null);
+        
+        User student = source.getStudent();
+        target.setStudentId(student != null ? student.getId() : null);
+        
+        target.setSubmittedAt(source.getSubmittedAt());
+        target.setContent(source.getContent());
+        target.setScore(source.getScore());
+        target.setFeedback(source.getFeedback());
+        
+        return target;
     }
 
-    public static Submission fromRequest(CreateSubmissionRequest request, Assignment assignment, User student) {
-        Submission submission = new Submission();
-        submission.setAssignment(assignment);
-        submission.setStudent(student);
-        submission.setContent(request.getContent());
-        return submission;
+    /**
+     * Создает новую сущность Submission на основе запроса.
+     * Привязывает отправку к указанному заданию и студенту.
+     */
+    public static Submission fromRequest(CreateSubmissionRequest request, 
+                                       Assignment assignment, User student) {
+        Submission entity = new Submission();
+        entity.setAssignment(assignment);
+        entity.setStudent(student);
+        entity.setContent(request.getContent());
+        
+        return entity;
     }
 }
