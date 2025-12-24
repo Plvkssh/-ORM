@@ -10,7 +10,6 @@ public class QuestionResponse {
     private QuestionType type;
     private List<AnswerOptionResponse> options;
 
-    // Конструкторы
     public QuestionResponse() {}
     
     public QuestionResponse(Long id, Long quizId, String text, QuestionType type, List<AnswerOptionResponse> options) {
@@ -21,7 +20,6 @@ public class QuestionResponse {
         this.options = options;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -60,5 +58,14 @@ public class QuestionResponse {
     
     public void setOptions(List<AnswerOptionResponse> options) { 
         this.options = options; 
+    }
+    
+    @Override
+    public String toString() {
+        return "QuestionResponse{id=" + id + 
+               ", quizId=" + quizId + 
+               ", text='" + text + '\'' + 
+               ", type=" + type + 
+               ", options=" + options + '}';
     }
 }
