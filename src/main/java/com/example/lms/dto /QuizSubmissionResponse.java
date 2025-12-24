@@ -9,7 +9,6 @@ public class QuizSubmissionResponse {
     private Integer score;
     private LocalDateTime takenAt;
 
-    // Конструкторы
     public QuizSubmissionResponse() {}
     
     public QuizSubmissionResponse(Long id, Long quizId, Long studentId, Integer score, LocalDateTime takenAt) {
@@ -20,7 +19,6 @@ public class QuizSubmissionResponse {
         this.takenAt = takenAt;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -59,5 +57,14 @@ public class QuizSubmissionResponse {
     
     public void setTakenAt(LocalDateTime takenAt) { 
         this.takenAt = takenAt; 
+    }
+    
+    @Override
+    public String toString() {
+        return "QuizSubmissionResponse{id=" + id + 
+               ", quizId=" + quizId + 
+               ", studentId=" + studentId + 
+               ", score=" + score + 
+               ", takenAt=" + takenAt + '}';
     }
 }
