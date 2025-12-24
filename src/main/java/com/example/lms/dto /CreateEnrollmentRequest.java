@@ -14,7 +14,6 @@ public class CreateEnrollmentRequest {
     private LocalDate enrollDate;
     private EnrollmentStatus status;
 
-    // Конструкторы
     public CreateEnrollmentRequest() {}
     
     public CreateEnrollmentRequest(Long studentId, Long courseId, LocalDate enrollDate, EnrollmentStatus status) {
@@ -24,7 +23,6 @@ public class CreateEnrollmentRequest {
         this.status = status;
     }
 
-    // Геттеры и сеттеры
     public Long getStudentId() { 
         return studentId; 
     }
@@ -55,5 +53,13 @@ public class CreateEnrollmentRequest {
     
     public void setStatus(EnrollmentStatus status) { 
         this.status = status; 
+    }
+    
+    @Override
+    public String toString() {
+        return "CreateEnrollmentRequest{studentId=" + studentId + 
+               ", courseId=" + courseId + 
+               ", enrollDate=" + enrollDate + 
+               ", status=" + status + '}';
     }
 }
