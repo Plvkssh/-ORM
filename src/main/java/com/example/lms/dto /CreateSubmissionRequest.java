@@ -13,7 +13,6 @@ public class CreateSubmissionRequest {
     @NotBlank(message = "Содержание решения не может быть пустым")
     private String content;
 
-    // Конструкторы
     public CreateSubmissionRequest() {}
     
     public CreateSubmissionRequest(Long assignmentId, Long studentId, String content) {
@@ -22,7 +21,6 @@ public class CreateSubmissionRequest {
         this.content = content;
     }
 
-    // Геттеры и сеттеры
     public Long getAssignmentId() { 
         return assignmentId; 
     }
@@ -45,5 +43,12 @@ public class CreateSubmissionRequest {
     
     public void setContent(String content) { 
         this.content = content; 
+    }
+    
+    @Override
+    public String toString() {
+        return "CreateSubmissionRequest{assignmentId=" + assignmentId + 
+               ", studentId=" + studentId + 
+               ", content='" + content + '\'' + '}';
     }
 }
