@@ -15,10 +15,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-/**
- * Контроллер для управления заданиями через REST API.
- * Предоставляет endpoints для операций CRUD над заданиями.
- */
 @RestController
 @RequestMapping("/api/assignments")
 public class AssignmentController {
@@ -31,11 +27,6 @@ public class AssignmentController {
         this.lessonRepository = lessonRepository;
     }
 
-    /**
-     * Получает все задания.
-     *
-     * @return список всех заданий в формате DTO
-     */
     @GetMapping
     public List<AssignmentResponse> findAll() { 
         return assignmentService.findAll().stream()
@@ -43,23 +34,13 @@ public class AssignmentController {
                 .collect(Collectors.toList()); 
     }
 
-    /**
-     * Находит задание по идентификатору.
-     *
-     * @param id идентификатор задания
-     * @return задание в формате DTO
-     */
     @GetMapping("/{id}")
     public AssignmentResponse getById(@PathVariable Long id) { 
         return AssignmentMapper.toResponse(assignmentService.getById(id)); 
     }
 
     /**
-     * Создаёт новое задание.
-     *
-     * @param request данные для создания задания
-     * @return созданное задание в формате DTO
-     * @throws NoSuchElementException если урок с указанным ID не найден
+     * Создает новое задание. Проверяет существование указанного урока.
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -71,12 +52,7 @@ public class AssignmentController {
     }
 
     /**
-     * Обновляет существующее задание.
-     *
-     * @param id идентификатор обновляемого задания
-     * @param request обновлённые данные задания
-     * @return обновлённое задание в формате DTO
-     * @throws NoSuchElementException если урок с указанным ID не найден
+     * Обновляет существующее задание. Проверяет существование задания и урока.
      */
     @PutMapping("/{id}")
     public AssignmentResponse update(@PathVariable Long id, @Valid @RequestBody CreateAssignmentRequest request) {
@@ -87,11 +63,6 @@ public class AssignmentController {
         return AssignmentMapper.toResponse(assignmentService.update(id, existingAssignment));
     }
 
-    /**
-     * Удаляет задание.
-     *
-     * @param id идентификатор удаляемого задания
-     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) { 
