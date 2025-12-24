@@ -15,44 +15,40 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
+        return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Публичные эндпоинты для документации
+                        // OpenAPI документация
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        // Административные endpoints
+                        
+                        // Административные endpoint-ы
                         .requestMatchers("/api/users/**").hasRole("ADMIN")
-                        // Эндпоинты для преподавателей
-                        .requestMatchers("/api/submissions/**", "/api/quiz-submissions/**").hasAnyRole("TEACHER", "ADMIN")
-                        // Остальные endpoints публичные
-                        .anyRequest().permitAll()
+                        
+                        // Ресурсы для преподавателей
+                        .requestMatchers("/api/submissions/**", "/api/quiz-submissions/**")
+                        .hasAnyRole("TEACHER", "ADMIN")
+                        
+                        // Остальные запросы требуют аутентификации
+                        .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults());
-        
-        return http.build();
+                .httpBasic(Customizer.withDefaults())
+                .build();
     }
 
     @Bean
     public UserDetailsService userDetailsService() {
-        // Демо-пользователи для тестирования (в продакшене заменить на базу данных)
-        UserDetails admin = User.withDefaultPasswordEncoder()
-                .username("admin")
-                .password("admin")
-                .roles("ADMIN")
-                .build();
-                
-        UserDetails teacher = User.withDefaultPasswordEncoder()
-                .username("teacher")
-                .password("teacher")
-                .roles("TEACHER")
-                .build();
-                
-        UserDetails student = User.withDefaultPasswordEncoder()
-                .username("student")
-                .password("student")
-                .roles("STUDENT")
-                .build();
-                
+        UserDetails admin = createUser("admin", "admin", "ADMIN");
+        UserDetails teacher = createUser("teacher", "teacher", "TEACHER");
+        UserDetails student = createUser("student", "student", "STUDENT");
+        
         return new InMemoryUserDetailsManager(admin, teacher, student);
+    }
+    
+    private UserDetails createUser(String username, String password, String role) {
+        return User.withDefaultPasswordEncoder()
+                .username(username)
+                .password(password)
+                .roles(role)
+                .build();
     }
 }
