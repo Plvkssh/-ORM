@@ -28,7 +28,6 @@ public class Enrollment {
     @Column(nullable = false, length = 20)
     private EnrollmentStatus status = EnrollmentStatus.ACTIVE;
 
-    // Конструкторы
     public Enrollment() {}
     
     public Enrollment(User student, Course course, EnrollmentStatus status) {
@@ -37,7 +36,6 @@ public class Enrollment {
         this.status = status;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -76,5 +74,14 @@ public class Enrollment {
     
     public void setStatus(EnrollmentStatus status) { 
         this.status = status; 
+    }
+    
+    @Override
+    public String toString() {
+        return "Enrollment{id=" + id + 
+               ", student=" + (student != null ? student.getId() : "null") + 
+               ", course=" + (course != null ? course.getId() : "null") + 
+               ", enrollDate=" + enrollDate + 
+               ", status=" + status + '}';
     }
 }
