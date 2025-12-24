@@ -7,7 +7,6 @@ public class LessonResponse {
     private String content;
     private String videoUrl;
 
-    // Конструкторы
     public LessonResponse() {}
     
     public LessonResponse(Long id, Long moduleId, String title, String content, String videoUrl) {
@@ -18,7 +17,6 @@ public class LessonResponse {
         this.videoUrl = videoUrl;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -57,5 +55,14 @@ public class LessonResponse {
     
     public void setVideoUrl(String videoUrl) { 
         this.videoUrl = videoUrl; 
+    }
+    
+    @Override
+    public String toString() {
+        return "LessonResponse{id=" + id + 
+               ", moduleId=" + moduleId + 
+               ", title='" + title + '\'' + 
+               ", content='" + content + '\'' + 
+               ", videoUrl='" + videoUrl + '\'' + '}';
     }
 }
