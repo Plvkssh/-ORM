@@ -6,32 +6,50 @@ import com.example.lms.model.Assignment;
 import com.example.lms.model.Lesson;
 
 public class AssignmentMapper {
-    public static AssignmentResponse toResponse(Assignment assignment) {
-        AssignmentResponse response = new AssignmentResponse();
-        response.setId(assignment.getId());
-        response.setLessonId(assignment.getLesson() != null ? assignment.getLesson().getId() : null);
-        response.setTitle(assignment.getTitle());
-        response.setDescription(assignment.getDescription());
-        response.setDueDate(assignment.getDueDate());
-        response.setMaxScore(assignment.getMaxScore());
-        return response;
+    
+    /**
+     * Преобразует сущность Assignment в DTO для ответа.
+     * Извлекает ID связанного урока для включения в ответ.
+     */
+    public static AssignmentResponse toResponse(Assignment source) {
+        AssignmentResponse target = new AssignmentResponse();
+        target.setId(source.getId());
+        
+        Lesson relatedLesson = source.getLesson();
+        target.setLessonId(relatedLesson != null ? relatedLesson.getId() : null);
+        
+        target.setTitle(source.getTitle());
+        target.setDescription(source.getDescription());
+        target.setDueDate(source.getDueDate());
+        target.setMaxScore(source.getMaxScore());
+        
+        return target;
     }
 
+    /**
+     * Создает новую сущность Assignment на основе запроса.
+     * Привязывает задание к указанному уроку.
+     */
     public static Assignment fromRequest(CreateAssignmentRequest request, Lesson lesson) {
-        Assignment assignment = new Assignment();
-        assignment.setLesson(lesson);
-        assignment.setTitle(request.getTitle());
-        assignment.setDescription(request.getDescription());
-        assignment.setDueDate(request.getDueDate());
-        assignment.setMaxScore(request.getMaxScore());
-        return assignment;
+        Assignment entity = new Assignment();
+        entity.setLesson(lesson);
+        entity.setTitle(request.getTitle());
+        entity.setDescription(request.getDescription());
+        entity.setDueDate(request.getDueDate());
+        entity.setMaxScore(request.getMaxScore());
+        
+        return entity;
     }
 
-    public static void updateEntity(Assignment existingAssignment, CreateAssignmentRequest request, Lesson lesson) {
-        existingAssignment.setLesson(lesson);
-        existingAssignment.setTitle(request.getTitle());
-        existingAssignment.setDescription(request.getDescription());
-        existingAssignment.setDueDate(request.getDueDate());
-        existingAssignment.setMaxScore(request.getMaxScore());
+    /**
+     * Обновляет существующую сущность Assignment данными из запроса.
+     * Также обновляет связь с уроком при необходимости.
+     */
+    public static void updateEntity(Assignment target, CreateAssignmentRequest source, Lesson lesson) {
+        target.setLesson(lesson);
+        target.setTitle(source.getTitle());
+        target.setDescription(source.getDescription());
+        target.setDueDate(source.getDueDate());
+        target.setMaxScore(source.getMaxScore());
     }
 }
