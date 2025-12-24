@@ -14,7 +14,6 @@ public class CreateQuestionRequest {
     @NotNull(message = "Тип вопроса должен быть указан")
     private QuestionType type;
 
-    // Конструкторы
     public CreateQuestionRequest() {}
     
     public CreateQuestionRequest(Long quizId, String text, QuestionType type) {
@@ -23,7 +22,6 @@ public class CreateQuestionRequest {
         this.type = type;
     }
 
-    // Геттеры и сеттеры
     public Long getQuizId() { 
         return quizId; 
     }
@@ -46,5 +44,12 @@ public class CreateQuestionRequest {
     
     public void setType(QuestionType type) { 
         this.type = type; 
+    }
+    
+    @Override
+    public String toString() {
+        return "CreateQuestionRequest{quizId=" + quizId + 
+               ", text='" + text + '\'' + 
+               ", type=" + type + '}';
     }
 }
