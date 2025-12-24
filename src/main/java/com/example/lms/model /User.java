@@ -47,7 +47,6 @@ public class User {
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseReview> reviews = new ArrayList<>();
 
-    // Конструкторы
     public User() {}
     
     public User(String name, String email, UserRole role) {
@@ -56,7 +55,6 @@ public class User {
         this.role = role;
     }
 
-    // Геттеры и сеттеры
     public Long getId() {
         return id;
     }
@@ -138,5 +136,13 @@ public class User {
 
     public void setReviews(List<CourseReview> reviews) {
         this.reviews = reviews;
+    }
+    
+    @Override
+    public String toString() {
+        return "User{id=" + id + 
+               ", name='" + name + '\'' + 
+               ", email='" + email + '\'' + 
+               ", role=" + role + '}';
     }
 }
