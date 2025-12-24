@@ -12,10 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-/**
- * Сервис для управления решениями заданий студентами.
- * Обрабатывает отправку решений, проверку дубликатов и оценку работ преподавателями.
- */
 @Service
 @Transactional
 public class SubmissionService {
@@ -32,21 +28,12 @@ public class SubmissionService {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Получает все решения заданий из системы.
-     *
-     * @return список всех решений
-     */
     public List<Submission> findAll() { 
         return submissionRepository.findAll(); 
     }
 
     /**
-     * Находит решение задания по его идентификатору.
-     *
-     * @param id идентификатор решения
-     * @return найденное решение
-     * @throws NoSuchElementException если решение с указанным ID не существует
+     * Возвращает решение задания по ID. Если не найдено, выбрасывает исключение.
      */
     public Submission getById(Long id) { 
         return submissionRepository.findById(id)
@@ -55,10 +42,7 @@ public class SubmissionService {
 
     /**
      * Получает все решения для указанного задания.
-     *
-     * @param assignmentId идентификатор задания
-     * @return список решений данного задания
-     * @throws NoSuchElementException если задание не найдено
+     * Проверяет существование задания перед поиском решений.
      */
     public List<Submission> getByAssignment(Long assignmentId) {
         Assignment assignment = assignmentRepository.findById(assignmentId)
@@ -67,11 +51,8 @@ public class SubmissionService {
     }
 
     /**
-     * Получает все решения, отправленные указанным студентом.
-     *
-     * @param studentId идентификатор студента
-     * @return список решений данного студента
-     * @throws NoSuchElementException если студент не найден
+     * Получает все решения указанного студента.
+     * Проверяет существование студента перед поиском решений.
      */
     public List<Submission> getByStudent(Long studentId) {
         User student = userRepository.findById(studentId)
@@ -80,12 +61,8 @@ public class SubmissionService {
     }
 
     /**
-     * Создаёт новое решение задания с проверкой на дублирование.
-     * Каждый студент может отправить только одно решение на каждое задание.
-     *
-     * @param submission решение для создания
-     * @return сохранённое решение с присвоенным ID
-     * @throws IllegalStateException если студент уже отправил решение этого задания
+     * Создает новое решение задания с проверкой дублирования.
+     * Каждый студент может отправить только одно решение на задание.
      */
     public Submission create(Submission submission) {
         if (submissionRepository.findByStudentAndAssignment(submission.getStudent(), 
@@ -96,14 +73,8 @@ public class SubmissionService {
     }
 
     /**
-     * Оценивает решение задания преподавателем.
-     * Устанавливает баллы и обратную связь для решения студента.
-     *
-     * @param id идентификатор оцениваемого решения
-     * @param score полученные баллы
-     * @param feedback обратная связь от преподавателя
-     * @return обновлённое решение с оценкой
-     * @throws NoSuchElementException если решение с указанным ID не существует
+     * Оценивает решение задания.
+     * Устанавливает баллы и обратную связь от преподавателя.
      */
     public Submission grade(Long id, Integer score, String feedback) {
         Submission submission = getById(id);
@@ -112,11 +83,6 @@ public class SubmissionService {
         return submissionRepository.save(submission);
     }
 
-    /**
-     * Удаляет решение задания из системы.
-     *
-     * @param id идентификатор удаляемого решения
-     */
     public void delete(Long id) { 
         submissionRepository.deleteById(id); 
     }
