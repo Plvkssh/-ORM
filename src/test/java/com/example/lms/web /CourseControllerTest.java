@@ -16,10 +16,6 @@ import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Интеграционный тест для контроллера курсов (CourseController).
- * Проверяет работу REST endpoints для создания и получения курсов через HTTP запросы.
- */
 @SpringBootTest
 @AutoConfigureMockMvc
 class CourseControllerTest extends PostgresContainerTest {
@@ -32,10 +28,6 @@ class CourseControllerTest extends PostgresContainerTest {
 
     private Long teacherId;
 
-    /**
-     * Настройка тестового окружения перед каждым тестом.
-     * Создаёт преподавателя, который будет использоваться в тестах создания курсов.
-     */
     @BeforeEach
     void setupTeacher() {
         User teacher = new User();
@@ -45,18 +37,8 @@ class CourseControllerTest extends PostgresContainerTest {
         teacherId = userRepository.save(teacher).getId();
     }
 
-    /**
-     * Тест создания нового курса и последующего получения списка курсов.
-     * Проверяет полный цикл работы контроллера:
-     * 1. Создание курса через POST запрос
-     * 2. Проверка корректности созданного курса
-     * 3. Получение списка всех курсов через GET запрос
-     * 
-     * @throws Exception если происходит ошибка в MockMvc
-     */
     @Test
     void createAndGetCourse() throws Exception {
-        // Подготовка JSON тела запроса для создания курса
         String courseRequestJson = String.format("""
             {
               "title": "Введение в Java программирование",
@@ -65,7 +47,6 @@ class CourseControllerTest extends PostgresContainerTest {
             }
             """, teacherId);
 
-        // Создание курса и проверка ответа
         mockMvc.perform(post("/api/courses")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(courseRequestJson))
@@ -73,7 +54,6 @@ class CourseControllerTest extends PostgresContainerTest {
                 .andExpect(jsonPath("$.title", is("Введение в Java программирование")))
                 .andExpect(jsonPath("$.teacherId", is(teacherId.intValue())));
 
-        // Получение списка всех курсов
         mockMvc.perform(get("/api/courses"))
                 .andExpect(status().isOk());
     }
