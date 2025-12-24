@@ -13,10 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-/**
- * Сервис для управления курсами и их структурой.
- * Обеспечивает операции с курсами, модулями и уроками, включая построение иерархии.
- */
 @Service
 @Transactional
 public class CourseService {
@@ -32,21 +28,12 @@ public class CourseService {
         this.lessonRepository = lessonRepository;
     }
 
-    /**
-     * Получает все курсы из системы.
-     *
-     * @return список всех курсов
-     */
     public List<Course> findAll() { 
         return courseRepository.findAll(); 
     }
 
     /**
-     * Находит курс по его идентификатору.
-     *
-     * @param id идентификатор курса
-     * @return найденный курс
-     * @throws NoSuchElementException если курс с указанным ID не существует
+     * Возвращает курс по ID. Если курс не найден, выбрасывает исключение.
      */
     public Course getById(Long id) {
         return courseRepository.findById(id)
@@ -54,52 +41,33 @@ public class CourseService {
     }
 
     /**
-     * Находит все курсы, которые ведёт указанный преподаватель.
-     *
-     * @param teacher преподаватель, чьи курсы нужно найти
-     * @return список курсов преподавателя
+     * Находит все курсы указанного преподавателя.
      */
     public List<Course> findByTeacher(User teacher) { 
         return courseRepository.findByTeacher(teacher); 
     }
 
-    /**
-     * Создаёт новый курс в системе.
-     *
-     * @param course курс для создания
-     * @return сохранённый курс с присвоенным ID
-     */
     public Course create(Course course) { 
         return courseRepository.save(course); 
     }
 
     /**
-     * Обновляет существующий курс.
-     *
-     * @param id идентификатор обновляемого курса
-     * @param updated обновлённые данные курса
-     * @return сохранённый обновлённый курс
-     * @throws NoSuchElementException если курс с указанным ID не существует
+     * Обновляет существующий курс. Сначала проверяет его существование.
      */
-    public Course update(Long id, Course updated) {
+    public Course update(Long id, Course updatedCourse) {
         Course existingCourse = getById(id);
-        existingCourse.setTitle(updated.getTitle());
-        existingCourse.setDescription(updated.getDescription());
-        existingCourse.setDuration(updated.getDuration());
-        existingCourse.setStartDate(updated.getStartDate());
-        existingCourse.setCategory(updated.getCategory());
-        existingCourse.setTeacher(updated.getTeacher());
-        existingCourse.setTags(updated.getTags());
+        existingCourse.setTitle(updatedCourse.getTitle());
+        existingCourse.setDescription(updatedCourse.getDescription());
+        existingCourse.setDuration(updatedCourse.getDuration());
+        existingCourse.setStartDate(updatedCourse.getStartDate());
+        existingCourse.setCategory(updatedCourse.getCategory());
+        existingCourse.setTeacher(updatedCourse.getTeacher());
+        existingCourse.setTags(updatedCourse.getTags());
         return courseRepository.save(existingCourse);
     }
 
     /**
-     * Добавляет новый модуль к существующему курсу.
-     *
-     * @param courseId идентификатор курса, к которому добавляется модуль
-     * @param module модуль для добавления
-     * @return сохранённый модуль с установленной связью с курсом
-     * @throws NoSuchElementException если курс с указанным ID не существует
+     * Добавляет новый модуль к курсу. Сначала проверяет существование курса.
      */
     public Module addModule(Long courseId, Module module) {
         Course course = getById(courseId);
@@ -108,12 +76,7 @@ public class CourseService {
     }
 
     /**
-     * Добавляет новый урок к существующему модулю.
-     *
-     * @param moduleId идентификатор модуля, к которому добавляется урок
-     * @param lesson урок для добавления
-     * @return сохранённый урок с установленной связью с модулем
-     * @throws NoSuchElementException если модуль с указанным ID не существует
+     * Добавляет новый урок к модулю. Если модуль не найден, выбрасывает исключение.
      */
     public Lesson addLesson(Long moduleId, Lesson lesson) {
         Module module = moduleRepository.findById(moduleId)
@@ -122,11 +85,6 @@ public class CourseService {
         return lessonRepository.save(lesson);
     }
 
-    /**
-     * Удаляет курс из системы.
-     *
-     * @param id идентификатор удаляемого курса
-     */
     public void delete(Long id) { 
         courseRepository.deleteById(id); 
     }
