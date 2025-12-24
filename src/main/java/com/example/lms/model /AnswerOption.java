@@ -20,7 +20,6 @@ public class AnswerOption {
     @Column(nullable = false)
     private boolean isCorrect;
 
-    // Конструкторы
     public AnswerOption() {}
     
     public AnswerOption(Question question, String text, boolean isCorrect) {
@@ -29,7 +28,6 @@ public class AnswerOption {
         this.isCorrect = isCorrect;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -59,6 +57,14 @@ public class AnswerOption {
     }
     
     public void setCorrect(boolean correct) { 
-        isCorrect = correct; 
+        this.isCorrect = correct; 
+    }
+    
+    @Override
+    public String toString() {
+        return "AnswerOption{id=" + id + 
+               ", question=" + (question != null ? question.getId() : "null") + 
+               ", text='" + text + '\'' + 
+               ", isCorrect=" + isCorrect + '}';
     }
 }
