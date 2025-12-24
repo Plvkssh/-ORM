@@ -6,20 +6,34 @@ import com.example.lms.model.AnswerOption;
 import com.example.lms.model.Question;
 
 public class AnswerOptionMapper {
-    public static AnswerOptionResponse toResponse(AnswerOption answerOption) {
-        AnswerOptionResponse response = new AnswerOptionResponse();
-        response.setId(answerOption.getId());
-        response.setQuestionId(answerOption.getQuestion() != null ? answerOption.getQuestion().getId() : null);
-        response.setText(answerOption.getText());
-        response.setCorrect(answerOption.isCorrect());
-        return response;
+    
+    /**
+     * Преобразует сущность AnswerOption в DTO для ответа.
+     * Извлекает ID связанного вопроса для включения в ответ.
+     */
+    public static AnswerOptionResponse toResponse(AnswerOption source) {
+        AnswerOptionResponse target = new AnswerOptionResponse();
+        target.setId(source.getId());
+        
+        Question relatedQuestion = source.getQuestion();
+        target.setQuestionId(relatedQuestion != null ? relatedQuestion.getId() : null);
+        
+        target.setText(source.getText());
+        target.setCorrect(source.isCorrect());
+        
+        return target;
     }
 
+    /**
+     * Создает сущность AnswerOption из запроса на создание.
+     * Привязывает вариант ответа к указанному вопросу.
+     */
     public static AnswerOption fromRequest(CreateAnswerOptionRequest request, Question question) {
-        AnswerOption answerOption = new AnswerOption();
-        answerOption.setQuestion(question);
-        answerOption.setText(request.getText());
-        answerOption.setCorrect(request.isCorrect());
-        return answerOption;
+        AnswerOption entity = new AnswerOption();
+        entity.setQuestion(question);
+        entity.setText(request.getText());
+        entity.setCorrect(request.isCorrect());
+        
+        return entity;
     }
 }
