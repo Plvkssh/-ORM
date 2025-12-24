@@ -27,7 +27,6 @@ public class Lesson {
     @OneToMany(mappedBy = "lesson", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Assignment> assignments = new ArrayList<>();
 
-    // Конструкторы
     public Lesson() {}
     
     public Lesson(Module module, String title, String content, String videoUrl) {
@@ -37,7 +36,6 @@ public class Lesson {
         this.videoUrl = videoUrl;
     }
 
-    // Геттеры и сеттеры
     public Long getId() { 
         return id; 
     }
@@ -84,5 +82,14 @@ public class Lesson {
     
     public void setAssignments(List<Assignment> assignments) { 
         this.assignments = assignments; 
+    }
+    
+    @Override
+    public String toString() {
+        return "Lesson{id=" + id + 
+               ", module=" + (module != null ? module.getId() : "null") + 
+               ", title='" + title + '\'' + 
+               ", content='" + content + '\'' + 
+               ", videoUrl='" + videoUrl + '\'' + '}';
     }
 }
