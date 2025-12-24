@@ -17,7 +17,6 @@ public class CreateAssignmentRequest {
     @NotNull(message = "Максимальный балл должен быть указан")
     private Integer maxScore;
 
-    // Конструкторы
     public CreateAssignmentRequest() {}
     
     public CreateAssignmentRequest(Long lessonId, String title, String description, 
@@ -29,7 +28,6 @@ public class CreateAssignmentRequest {
         this.maxScore = maxScore;
     }
 
-    // Геттеры и сеттеры
     public Long getLessonId() { 
         return lessonId; 
     }
@@ -68,5 +66,14 @@ public class CreateAssignmentRequest {
     
     public void setMaxScore(Integer maxScore) { 
         this.maxScore = maxScore; 
+    }
+    
+    @Override
+    public String toString() {
+        return "CreateAssignmentRequest{lessonId=" + lessonId + 
+               ", title='" + title + '\'' + 
+               ", description='" + description + '\'' + 
+               ", dueDate=" + dueDate + 
+               ", maxScore=" + maxScore + '}';
     }
 }
